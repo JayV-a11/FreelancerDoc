@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // Supabase uses PostgreSQL.
+  // DATABASE_URL  → transaction pooler (port 6543) — used at runtime
+  // DIRECT_URL    → direct connection  (port 5432) — used by prisma migrate
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ── Enums ─────────────────────────────────────────────────────────────────
+
+enum TemplateType {
+  PROPOSAL
+  CONTRACT
+
+  @@map("template_type")
+}
+
+enum DocumentStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+  EXPIRED
+
+  @@map("document_status")
+}
+
+// ── Models ────────────────────────────────────────────────────────────────
+
+model User {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name             String    @db.VarChar(255)
+  email            String    @unique @db.VarChar(255)
+  passwordHash     String    @map("password_hash") @db.VarChar(255)
+  professionalName String?   @map("professional_name") @db.VarChar(255)
+  document         String?   @db.VarChar(20) // CPF or CNPJ — stored but never logged
+  phone            String?   @db.VarChar(30)
+  address          String?   @db.Text
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt        DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  templates Template[]
+  documents Document[]
+
+  @@map("users")
+}
+
+model Template {
+  id        String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String       @map("user_id") @db.Uuid
+  name      String       @db.VarChar(255)
+  type      TemplateType
+  // content stores the template body with variable placeholders
+  // e.g. {"blocks": [{"type": "text", "value": "Dear {{client_name}},"}]}
+  content   Json
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user      User       @relation(fields: [userId], references: [id])
+  documents Document[]
+
+  @@index([userId])
+  @@map("templates")
+}
+
+model Document {
+  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String         @map("user_id") @db.Uuid
+  templateId     String?        @map("template_id") @db.Uuid
+  title          String         @db.VarChar(255)
+  clientName     String         @map("client_name") @db.VarChar(255)
+  clientEmail    String         @map("client_email") @db.VarChar(255)
+  clientDocument String?        @map("client_document") @db.VarChar(20)
+  content        Json
+  status         DocumentStatus @default(DRAFT)
+  // NUMERIC(15,2) preserves exactness for financial values
+  totalValue     Decimal        @map("total_value") @db.Decimal(15, 2)
+  currency       String         @default("BRL") @db.Char(3)
+  validUntil     DateTime?      @map("valid_until") @db.Timestamptz(6)
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user     User              @relation(fields: [userId], references: [id])
+  template Template?         @relation(fields: [templateId], references: [id])
+  versions DocumentVersion[]
+
+  @@index([userId])
+  @@index([userId, status])
+  @@map("documents")
+}
+
+model DocumentVersion {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  documentId String   @map("document_id") @db.Uuid
+  // Full JSON snapshot of the document content at the time of versioning
+  content    Json
+  version    Int
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  document Document @relation(fields: [documentId], references: [id])
+
+  @@unique([documentId, version])
+  @@index([documentId])
+  @@map("document_versions")
+}

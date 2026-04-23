@@ -1,0 +1,243 @@
+{
+  "common": {
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "back": "Voltar",
+    "optional": "opcional",
+    "tryAgain": "Tentar novamente",
+    "goHome": "Ir para o início",
+    "deleting": "Excluindo…",
+    "saving": "Salvando…",
+    "creating": "Criando…",
+    "sending": "Enviando…"
+  },
+  "locale": {
+    "label": "Idioma",
+    "pt-br": "Português",
+    "en": "English",
+    "es": "Español"
+  },
+  "nav": {
+    "templates": "Modelos",
+    "documents": "Documentos",
+    "profile": "Perfil",
+    "signOut": "Sair"
+  },
+  "login": {
+    "title": "Entrar",
+    "description": "Insira suas credenciais para acessar o FreelanceDoc.",
+    "email": "E-mail",
+    "password": "Senha",
+    "submit": "Entrar",
+    "submitting": "Entrando…",
+    "noAccount": "Não tem uma conta?",
+    "createOne": "Criar conta",
+    "invalidCredentials": "E-mail ou senha inválidos. Tente novamente.",
+    "validation": {
+      "emailInvalid": "Insira um e-mail válido",
+      "passwordRequired": "A senha é obrigatória"
+    }
+  },
+  "register": {
+    "title": "Criar conta",
+    "description": "Cadastre-se para começar a usar o FreelanceDoc.",
+    "fullName": "Nome completo",
+    "email": "E-mail",
+    "password": "Senha",
+    "submit": "Criar conta",
+    "submitting": "Criando conta…",
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "signIn": "Entrar",
+    "defaultError": "Cadastro falhou. Tente novamente.",
+    "validation": {
+      "nameRequired": "O nome é obrigatório",
+      "emailInvalid": "Insira um e-mail válido",
+      "passwordMin": "A senha deve ter pelo menos 8 caracteres"
+    }
+  },
+  "templates": {
+    "title": "Modelos",
+    "description": "Estruturas reutilizáveis de proposta e contrato.",
+    "newTemplate": "Novo modelo",
+    "noTemplates": "Nenhum modelo ainda.",
+    "createFirst": "Crie seu primeiro modelo",
+    "failedLoad": "Falha ao carregar modelos.",
+    "failedDelete": "Falha ao excluir modelo.",
+    "created": "Criado",
+    "deleteDialog": {
+      "title": "Excluir modelo",
+      "description": "Esta ação não pode ser desfeita. O modelo será excluído permanentemente.",
+      "confirm": "Excluir",
+      "confirming": "Excluindo…"
+    }
+  },
+  "templatesNew": {
+    "title": "Novo modelo",
+    "description": "Crie uma estrutura reutilizável para suas propostas ou contratos.",
+    "cardTitle": "Detalhes do modelo",
+    "cardDescription": "O conteúdo usa blocos JSON:",
+    "name": "Nome",
+    "namePlaceholder": "ex: Proposta de Desenvolvimento Web",
+    "type": "Tipo",
+    "selectType": "Selecione o tipo",
+    "proposal": "Proposta",
+    "contract": "Contrato",
+    "content": "Conteúdo (JSON)",
+    "submit": "Criar modelo",
+    "submitting": "Salvando…",
+    "failedCreate": "Falha ao criar modelo. Tente novamente.",
+    "validation": {
+      "nameRequired": "O nome é obrigatório",
+      "contentRequired": "O conteúdo é obrigatório",
+      "contentInvalidJson": "O conteúdo deve ser um JSON válido"
+    }
+  },
+  "templatesEdit": {
+    "title": "Editar modelo",
+    "description": "Atualize o conteúdo do seu modelo.",
+    "cardTitle": "Detalhes do modelo",
+    "cardDescription": "O conteúdo usa blocos JSON:",
+    "name": "Nome",
+    "type": "Tipo",
+    "selectType": "Selecione o tipo",
+    "proposal": "Proposta",
+    "contract": "Contrato",
+    "content": "Conteúdo (JSON)",
+    "saveChanges": "Salvar alterações",
+    "saving": "Salvando…",
+    "failedUpdate": "Falha ao atualizar modelo. Tente novamente.",
+    "notFound": "Modelo não encontrado.",
+    "validation": {
+      "nameRequired": "O nome é obrigatório",
+      "contentRequired": "O conteúdo é obrigatório",
+      "contentInvalidJson": "O conteúdo deve ser um JSON válido"
+    }
+  },
+  "documents": {
+    "title": "Documentos",
+    "description": "Gerencie suas propostas e contratos.",
+    "newDocument": "Novo documento",
+    "noDocuments": "Nenhum documento encontrado.",
+    "createFirst": "Crie seu primeiro documento",
+    "failedLoad": "Falha ao carregar documentos.",
+    "failedDelete": "Falha ao excluir documento.",
+    "filterByStatus": "Filtrar por status:",
+    "all": "Todos",
+    "statuses": {
+      "DRAFT": "Rascunho",
+      "SENT": "Enviado",
+      "ACCEPTED": "Aceito",
+      "REJECTED": "Rejeitado",
+      "EXPIRED": "Expirado"
+    },
+    "deleteDialog": {
+      "title": "Excluir documento",
+      "description": "Esta ação não pode ser desfeita. O documento será excluído permanentemente.",
+      "confirm": "Excluir",
+      "confirming": "Excluindo…"
+    }
+  },
+  "documentDetail": {
+    "downloadPdf": "Baixar PDF",
+    "sendByEmail": "Enviar por e-mail",
+    "changeStatus": "Alterar status",
+    "markAs": "Marcar como {status}",
+    "failedLoad": "Documento não encontrado.",
+    "failedStatus": "Falha ao atualizar status.",
+    "failedSend": "Falha ao enviar documento.",
+    "failedDownload": "Falha ao baixar PDF.",
+    "clientSection": "Cliente",
+    "clientName": "Nome",
+    "clientEmail": "E-mail",
+    "clientDocument": "Documento",
+    "value": "Valor",
+    "validUntil": "Válido até",
+    "contentSection": "Conteúdo",
+    "versionsSection": "Versões",
+    "revisions": "{count} revisão(ões)",
+    "sendDialog": {
+      "title": "Enviar documento por e-mail",
+      "description": "Deixe em branco para enviar para",
+      "override": "Substituir destinatário (opcional)",
+      "send": "Enviar",
+      "sending": "Enviando…"
+    }
+  },
+  "documentsNew": {
+    "title": "Novo documento",
+    "description": "Crie uma nova proposta ou contrato.",
+    "clientSection": "Informações do cliente",
+    "documentTitle": "Título do documento",
+    "titlePlaceholder": "ex: Proposta de Website",
+    "clientName": "Nome do cliente",
+    "clientEmail": "E-mail do cliente",
+    "clientDocument": "Documento do cliente",
+    "totalValue": "Valor total",
+    "currency": "Moeda",
+    "validUntil": "Válido até",
+    "contentSection": "Blocos de conteúdo",
+    "heading": "Título",
+    "paragraph": "Parágrafo",
+    "headingPlaceholder": "Texto do título…",
+    "paragraphPlaceholder": "Texto do parágrafo…",
+    "submit": "Criar documento",
+    "submitting": "Criando…",
+    "failedCreate": "Falha ao criar documento. Tente novamente.",
+    "validation": {
+      "titleRequired": "O título é obrigatório",
+      "clientNameRequired": "O nome do cliente é obrigatório",
+      "clientEmailInvalid": "Insira um e-mail válido",
+      "totalValuePositive": "Deve ser um número positivo",
+      "currencyLength": "Deve ter 3 caracteres"
+    }
+  },
+  "profile": {
+    "title": "Perfil",
+    "description": "Gerencie as informações da sua conta.",
+    "personal": {
+      "title": "Informações pessoais",
+      "description": "Seu nome aparece nos documentos enviados aos clientes.",
+      "fullName": "Nome completo",
+      "professionalName": "Nome profissional",
+      "document": "CPF / CNPJ",
+      "phone": "Telefone",
+      "address": "Endereço",
+      "submit": "Salvar perfil",
+      "submitting": "Salvando…",
+      "successMessage": "Perfil atualizado com sucesso.",
+      "failedUpdate": "Falha ao atualizar perfil.",
+      "validation": {
+        "nameRequired": "O nome é obrigatório"
+      }
+    },
+    "password": {
+      "title": "Alterar senha",
+      "description": "Use uma senha forte com pelo menos 8 caracteres.",
+      "current": "Senha atual",
+      "new": "Nova senha",
+      "confirm": "Confirmar nova senha",
+      "submit": "Alterar senha",
+      "submitting": "Alterando…",
+      "successMessage": "Senha alterada com sucesso.",
+      "defaultError": "Falha ao alterar a senha.",
+      "validation": {
+        "currentRequired": "A senha atual é obrigatória",
+        "newMin": "A nova senha deve ter pelo menos 8 caracteres",
+        "confirmRequired": "Confirme sua nova senha",
+        "passwordsMismatch": "As senhas não coincidem"
+      }
+    }
+  },
+  "errors": {
+    "globalTitle": "Algo deu errado",
+    "globalDescription": "Um erro inesperado ocorreu. Tente novamente ou volte para a página inicial.",
+    "errorId": "ID do erro:",
+    "dashboardTitle": "Algo deu errado",
+    "goToTemplates": "Ir para Modelos"
+  },
+  "notFound": {
+    "title": "Página não encontrada",
+    "description": "A página que você está procurando não existe ou foi movida."
+  }
+}

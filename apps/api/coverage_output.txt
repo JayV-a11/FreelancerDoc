@@ -1,0 +1,89 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/projetos/FreelancerDoc/apps/api[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+ [32m✓[39m src/modules/templates/templates.service.test.ts [2m([22m[2m11 tests[22m[2m)[22m[90m 30[2mms[22m[39m
+ [32m✓[39m src/modules/users/users.service.test.ts [2m([22m[2m13 tests[22m[2m)[22m[90m 20[2mms[22m[39m
+ [32m✓[39m src/modules/documents/documents.service.test.ts [2m([22m[2m22 tests[22m[2m)[22m[90m 37[2mms[22m[39m
+ [2m[90m↓[39m[22m src/test/security/rls.security.test.ts [2m([22m[2m19 tests[22m[2m | [22m[33m19 skipped[39m[2m)[22m
+ [32m✓[39m src/modules/auth/auth.service.test.ts [2m([22m[2m14 tests[22m[2m)[22m[90m 27[2mms[22m[39m
+ [32m✓[39m src/shared/utils/rate-limit.test.ts [2m([22m[2m9 tests[22m[2m)[22m[90m 10[2mms[22m[39m
+ [32m✓[39m src/shared/utils/email.service.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 14[2mms[22m[39m
+ [32m✓[39m src/shared/utils/logger.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 17[2mms[22m[39m
+ [32m✓[39m src/modules/documents/pdf.service.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 307[2mms[22m[39m
+ [32m✓[39m src/shared/errors/AppError.test.ts [2m([22m[2m11 tests[22m[2m)[22m[90m 20[2mms[22m[39m
+ [32m✓[39m src/modules/documents/documents.pdf.route.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 581[2mms[22m[39m
+ [32m✓[39m src/modules/users/users.routes.test.ts [2m([22m[2m20 tests[22m[2m)[22m[33m 625[2mms[22m[39m
+ [31m❯[39m src/modules/documents/documents.send.route.test.ts [2m([22m[2m6 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 533[2mms[22m[39m
+[31m   [31m×[31m Documents Send Email Route[2m > [22mPOST /documents/:id/send[2m > [22mreturns 200 with success message when email is sent[90m 116[2mms[22m[31m[39m
+[31m     → expected 422 to be 200 // Object.is equality[39m
+[31m   [31m×[31m Documents Send Email Route[2m > [22mPOST /documents/:id/send[2m > [22mreturns 200 and sends to document clientEmail by default[90m 6[2mms[22m[31m[39m
+[31m     → expected "spy" to be called once, but got 0 times[39m
+[31m   [31m×[31m Documents Send Email Route[2m > [22mPOST /documents/:id/send[2m > [22mreturns 404 when document does not exist[90m 6[2mms[22m[31m[39m
+[31m     → expected 422 to be 404 // Object.is equality[39m
+ [32m✓[39m src/modules/auth/auth.routes.test.ts [2m([22m[2m21 tests[22m[2m)[22m[33m 673[2mms[22m[39m
+ [32m✓[39m src/modules/templates/templates.routes.test.ts [2m([22m[2m20 tests[22m[2m)[22m[33m 636[2mms[22m[39m
+ [32m✓[39m src/modules/documents/documents.routes.test.ts [2m([22m[2m25 tests[22m[2m)[22m[33m 700[2mms[22m[39m
+ [32m✓[39m src/app.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 936[2mms[22m[39m
+ [32m✓[39m src/shared/utils/hash.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 1727[2mms[22m[39m
+   [33m[2m✓[22m[39m hashPassword[2m > [22mproduces different hashes for the same input (random salt) [33m433[2mms[22m[39m
+   [33m[2m✓[22m[39m verifyPassword[2m > [22mreturns true for a matching password [33m385[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 3 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/modules/documents/documents.send.route.test.ts[2m > [22mDocuments Send Email Route[2m > [22mPOST /documents/:id/send[2m > [22mreturns 200 with success message when email is sent
+[31m[1mAssertionError[22m: expected 422 to be 200 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 200[39m
+[31m+ 422[39m
+
+[36m [2m❯[22m src/modules/documents/documents.send.route.test.ts:[2m95:35[22m[39m
+    [90m 93| [39m      })
+    [90m 94| [39m
+    [90m 95| [39m      [34mexpect[39m(response[33m.[39mstatusCode)[33m.[39m[34mtoBe[39m([34m200[39m)
+    [90m   | [39m                                  [31m^[39m
+    [90m 96| [39m      [35mconst[39m body [33m=[39m response[33m.[39mjson[33m<[39m{ message[33m:[39m string }[33m>[39m()
+    [90m 97| [39m      [34mexpect[39m(body[33m.[39mmessage)[33m.[39m[34mtoBeDefined[39m()
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/modules/documents/documents.send.route.test.ts[2m > [22mDocuments Send Email Route[2m > [22mPOST /documents/:id/send[2m > [22mreturns 200 and sends to document clientEmail by default
+[31m[1mAssertionError[22m: expected "spy" to be called once, but got 0 times[39m
+[36m [2m❯[22m src/modules/documents/documents.send.route.test.ts:[2m107:35[22m[39m
+    [90m105| [39m      })
+    [90m106| [39m
+    [90m107| [39m      [34mexpect[39m(sendDocumentByEmail)[33m.[39m[34mtoHaveBeenCalledOnce[39m()
+    [90m   | [39m                                  [31m^[39m
+    [90m108| [39m      [35mconst[39m call [33m=[39m vi[33m.[39m[34mmocked[39m(sendDocumentByEmail)[33m.[39mmock[33m.[39mcalls[[34m0[39m][[34m0[39m]
+    [90m109| [39m      [34mexpect[39m(call[33m.[39mto)[33m.[39m[34mtoBe[39m([32m'acme@example.com'[39m)
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/modules/documents/documents.send.route.test.ts[2m > [22mDocuments Send Email Route[2m > [22mPOST /documents/:id/send[2m > [22mreturns 404 when document does not exist
+[31m[1mAssertionError[22m: expected 422 to be 404 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 404[39m
+[31m+ 422[39m
+
+[36m [2m❯[22m src/modules/documents/documents.send.route.test.ts:[2m144:35[22m[39m
+    [90m142| [39m      })
+    [90m143| [39m
+    [90m144| [39m      [34mexpect[39m(response[33m.[39mstatusCode)[33m.[39m[34mtoBe[39m([34m404[39m)
+    [90m   | [39m                                  [31m^[39m
+    [90m145| [39m    })
+    [90m146| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m16 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (18)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m214 passed[39m[22m[2m | [22m[33m19 skipped[39m[90m (236)[39m
+[2m   Start at [22m 22:25:37
+[2m   Duration [22m 4.85s[2m (transform 1.63s, setup 361ms, collect 15.90s, tests 6.89s, environment 15ms, prepare 5.93s)[22m
+

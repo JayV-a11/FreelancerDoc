@@ -1,0 +1,243 @@
+{
+  "common": {
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "back": "Volver",
+    "optional": "opcional",
+    "tryAgain": "Intentar de nuevo",
+    "goHome": "Ir al inicio",
+    "deleting": "Eliminando…",
+    "saving": "Guardando…",
+    "creating": "Creando…",
+    "sending": "Enviando…"
+  },
+  "locale": {
+    "label": "Idioma",
+    "pt-br": "Português",
+    "en": "English",
+    "es": "Español"
+  },
+  "nav": {
+    "templates": "Plantillas",
+    "documents": "Documentos",
+    "profile": "Perfil",
+    "signOut": "Cerrar sesión"
+  },
+  "login": {
+    "title": "Iniciar sesión",
+    "description": "Ingresa tus credenciales para acceder a FreelanceDoc.",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "submit": "Iniciar sesión",
+    "submitting": "Iniciando sesión…",
+    "noAccount": "¿No tienes una cuenta?",
+    "createOne": "Créala",
+    "invalidCredentials": "Correo o contraseña inválidos. Inténtalo de nuevo.",
+    "validation": {
+      "emailInvalid": "Ingresa un correo válido",
+      "passwordRequired": "La contraseña es obligatoria"
+    }
+  },
+  "register": {
+    "title": "Crear cuenta",
+    "description": "Regístrate para comenzar a usar FreelanceDoc.",
+    "fullName": "Nombre completo",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "submit": "Crear cuenta",
+    "submitting": "Creando cuenta…",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "signIn": "Iniciar sesión",
+    "defaultError": "El registro falló. Inténtalo de nuevo.",
+    "validation": {
+      "nameRequired": "El nombre es obligatorio",
+      "emailInvalid": "Ingresa un correo válido",
+      "passwordMin": "La contraseña debe tener al menos 8 caracteres"
+    }
+  },
+  "templates": {
+    "title": "Plantillas",
+    "description": "Estructuras reutilizables de propuestas y contratos.",
+    "newTemplate": "Nueva plantilla",
+    "noTemplates": "Aún no hay plantillas.",
+    "createFirst": "Crea tu primera plantilla",
+    "failedLoad": "Error al cargar plantillas.",
+    "failedDelete": "Error al eliminar la plantilla.",
+    "created": "Creado",
+    "deleteDialog": {
+      "title": "Eliminar plantilla",
+      "description": "Esta acción no se puede deshacer. La plantilla será eliminada permanentemente.",
+      "confirm": "Eliminar",
+      "confirming": "Eliminando…"
+    }
+  },
+  "templatesNew": {
+    "title": "Nueva plantilla",
+    "description": "Crea una estructura reutilizable para tus propuestas o contratos.",
+    "cardTitle": "Detalles de la plantilla",
+    "cardDescription": "El contenido usa bloques JSON:",
+    "name": "Nombre",
+    "namePlaceholder": "ej: Propuesta de Desarrollo Web",
+    "type": "Tipo",
+    "selectType": "Selecciona el tipo",
+    "proposal": "Propuesta",
+    "contract": "Contrato",
+    "content": "Contenido (JSON)",
+    "submit": "Crear plantilla",
+    "submitting": "Guardando…",
+    "failedCreate": "Error al crear la plantilla. Inténtalo de nuevo.",
+    "validation": {
+      "nameRequired": "El nombre es obligatorio",
+      "contentRequired": "El contenido es obligatorio",
+      "contentInvalidJson": "El contenido debe ser un JSON válido"
+    }
+  },
+  "templatesEdit": {
+    "title": "Editar plantilla",
+    "description": "Actualiza el contenido de tu plantilla.",
+    "cardTitle": "Detalles de la plantilla",
+    "cardDescription": "El contenido usa bloques JSON:",
+    "name": "Nombre",
+    "type": "Tipo",
+    "selectType": "Selecciona el tipo",
+    "proposal": "Propuesta",
+    "contract": "Contrato",
+    "content": "Contenido (JSON)",
+    "saveChanges": "Guardar cambios",
+    "saving": "Guardando…",
+    "failedUpdate": "Error al actualizar la plantilla. Inténtalo de nuevo.",
+    "notFound": "Plantilla no encontrada.",
+    "validation": {
+      "nameRequired": "El nombre es obligatorio",
+      "contentRequired": "El contenido es obligatorio",
+      "contentInvalidJson": "El contenido debe ser un JSON válido"
+    }
+  },
+  "documents": {
+    "title": "Documentos",
+    "description": "Administra tus propuestas y contratos.",
+    "newDocument": "Nuevo documento",
+    "noDocuments": "No se encontraron documentos.",
+    "createFirst": "Crea tu primer documento",
+    "failedLoad": "Error al cargar documentos.",
+    "failedDelete": "Error al eliminar el documento.",
+    "filterByStatus": "Filtrar por estado:",
+    "all": "Todos",
+    "statuses": {
+      "DRAFT": "Borrador",
+      "SENT": "Enviado",
+      "ACCEPTED": "Aceptado",
+      "REJECTED": "Rechazado",
+      "EXPIRED": "Expirado"
+    },
+    "deleteDialog": {
+      "title": "Eliminar documento",
+      "description": "Esta acción no se puede deshacer. El documento será eliminado permanentemente.",
+      "confirm": "Eliminar",
+      "confirming": "Eliminando…"
+    }
+  },
+  "documentDetail": {
+    "downloadPdf": "Descargar PDF",
+    "sendByEmail": "Enviar por correo",
+    "changeStatus": "Cambiar estado",
+    "markAs": "Marcar como {status}",
+    "failedLoad": "Documento no encontrado.",
+    "failedStatus": "Error al actualizar el estado.",
+    "failedSend": "Error al enviar el documento.",
+    "failedDownload": "Error al descargar el PDF.",
+    "clientSection": "Cliente",
+    "clientName": "Nombre",
+    "clientEmail": "Correo electrónico",
+    "clientDocument": "Documento",
+    "value": "Valor",
+    "validUntil": "Válido hasta",
+    "contentSection": "Contenido",
+    "versionsSection": "Versiones",
+    "revisions": "{count} revisión(es)",
+    "sendDialog": {
+      "title": "Enviar documento por correo",
+      "description": "Deja en blanco para enviar a",
+      "override": "Reemplazar destinatario (opcional)",
+      "send": "Enviar",
+      "sending": "Enviando…"
+    }
+  },
+  "documentsNew": {
+    "title": "Nuevo documento",
+    "description": "Crea una nueva propuesta o contrato.",
+    "clientSection": "Información del cliente",
+    "documentTitle": "Título del documento",
+    "titlePlaceholder": "ej: Propuesta de Sitio Web",
+    "clientName": "Nombre del cliente",
+    "clientEmail": "Correo del cliente",
+    "clientDocument": "Documento del cliente",
+    "totalValue": "Valor total",
+    "currency": "Moneda",
+    "validUntil": "Válido hasta",
+    "contentSection": "Bloques de contenido",
+    "heading": "Encabezado",
+    "paragraph": "Párrafo",
+    "headingPlaceholder": "Texto del encabezado…",
+    "paragraphPlaceholder": "Texto del párrafo…",
+    "submit": "Crear documento",
+    "submitting": "Creando…",
+    "failedCreate": "Error al crear el documento. Inténtalo de nuevo.",
+    "validation": {
+      "titleRequired": "El título es obligatorio",
+      "clientNameRequired": "El nombre del cliente es obligatorio",
+      "clientEmailInvalid": "Ingresa un correo válido",
+      "totalValuePositive": "Debe ser un número positivo",
+      "currencyLength": "Debe tener 3 caracteres"
+    }
+  },
+  "profile": {
+    "title": "Perfil",
+    "description": "Administra la información de tu cuenta.",
+    "personal": {
+      "title": "Información personal",
+      "description": "Tu nombre aparece en los documentos enviados a los clientes.",
+      "fullName": "Nombre completo",
+      "professionalName": "Nombre profesional",
+      "document": "CPF / CNPJ",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "submit": "Guardar perfil",
+      "submitting": "Guardando…",
+      "successMessage": "Perfil actualizado correctamente.",
+      "failedUpdate": "Error al actualizar el perfil.",
+      "validation": {
+        "nameRequired": "El nombre es obligatorio"
+      }
+    },
+    "password": {
+      "title": "Cambiar contraseña",
+      "description": "Usa una contraseña fuerte con al menos 8 caracteres.",
+      "current": "Contraseña actual",
+      "new": "Nueva contraseña",
+      "confirm": "Confirmar nueva contraseña",
+      "submit": "Cambiar contraseña",
+      "submitting": "Cambiando…",
+      "successMessage": "Contraseña cambiada correctamente.",
+      "defaultError": "Error al cambiar la contraseña.",
+      "validation": {
+        "currentRequired": "La contraseña actual es obligatoria",
+        "newMin": "La nueva contraseña debe tener al menos 8 caracteres",
+        "confirmRequired": "Confirma tu nueva contraseña",
+        "passwordsMismatch": "Las contraseñas no coinciden"
+      }
+    }
+  },
+  "errors": {
+    "globalTitle": "Algo salió mal",
+    "globalDescription": "Ocurrió un error inesperado. Inténtalo de nuevo o regresa a la página principal.",
+    "errorId": "ID del error:",
+    "dashboardTitle": "Algo salió mal",
+    "goToTemplates": "Ir a Plantillas"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "La página que buscas no existe o ha sido movida."
+  }
+}

@@ -1,0 +1,1352 @@
+[33m22:31:25 (20288) WARN ProjectReader[39m Glob pattern "!src/**/*.spec.ts" did not exclude any files.
+[32m22:31:25 (20288) INFO ProjectReader[39m Found 20 of 132 file(s) to be mutated.
+[32m22:31:25 (20288) INFO Instrumenter[39m Instrumented 20 source file(s) with 530 mutant(s)
+[32m22:31:26 (20288) INFO ConcurrencyTokenProvider[39m Creating 11 test runner process(es).
+[32m22:31:27 (20288) INFO BroadcastReporter[39m Detected that current console does not support the "progress" reporter, downgrading to "progress-append-only" reporter
+[32m22:31:28 (20288) INFO DryRunExecutor[39m Starting initial test run (vitest test runner with "perTest" coverage analysis). This may take a while.
+[32m22:31:39 (20288) INFO DryRunExecutor[39m Initial test run succeeded. Ran 217 tests in 11 seconds (net 1345.5918999999994 ms, overhead 9954.4081 ms).
+Mutation testing 7% (elapsed: <1m, remaining: ~2m) 41/383 tested (11 survived, 0 timed out)
+Mutation testing 15% (elapsed: <1m, remaining: ~1m) 85/383 tested (18 survived, 0 timed out)
+Mutation testing 20% (elapsed: <1m, remaining: ~1m) 123/383 tested (30 survived, 0 timed out)
+Mutation testing 34% (elapsed: <1m, remaining: ~1m) 166/383 tested (44 survived, 0 timed out)
+Mutation testing 46% (elapsed: <1m, remaining: <1m) 222/383 tested (62 survived, 0 timed out)
+Mutation testing 48% (elapsed: ~1m, remaining: ~1m) 262/383 tested (73 survived, 0 timed out)
+Mutation testing 53% (elapsed: ~1m, remaining: ~1m) 301/383 tested (81 survived, 0 timed out)
+Mutation testing 61% (elapsed: ~1m, remaining: <1m) 342/383 tested (89 survived, 0 timed out)
+Mutation testing 95% (elapsed: ~1m, remaining: <1m) 375/383 tested (97 survived, 0 timed out)
+
+All tests
+  modules
+    auth
+      auth.routes.test.ts
+        ✓ Auth Routes POST /auth/register returns 201 with accessToken and user payload on success (killed 7)
+        ~ Auth Routes POST /auth/register sets httpOnly refresh_token cookie on success (covered 17)
+        ✓ Auth Routes POST /auth/register access token contains correct sub, email, and role claims (killed 1)
+        ~ Auth Routes POST /auth/register does not expose passwordHash in the response (covered 17)
+        ✓ Auth Routes POST /auth/register returns 409 when email is already registered (killed 2)
+        ✓ Auth Routes POST /auth/register returns 422 for invalid email format (killed 2)
+        ~ Auth Routes POST /auth/register returns 422 for password shorter than 8 characters (covered 12)
+        ~ Auth Routes POST /auth/register returns 422 when name is missing (covered 12)
+        ✓ Auth Routes POST /auth/login returns 200 with accessToken on valid credentials (killed 7)
+        ~ Auth Routes POST /auth/login sets httpOnly refresh_token cookie on login (covered 25)
+        ✓ Auth Routes POST /auth/login returns 401 for wrong password (killed 3)
+        ✓ Auth Routes POST /auth/login returns 401 for non-existent email with the same message as wrong password (killed 1)
+        ✓ Auth Routes POST /auth/login returns 422 for missing email field (killed 2)
+        ✓ Auth Routes POST /auth/logout returns 200 and clears the refresh cookie when authenticated (killed 3)
+        ~ Auth Routes POST /auth/logout returns 401 when no Bearer token is provided (covered 11)
+        ~ Auth Routes POST /auth/logout returns 401 for an invalid/expired Bearer token (covered 11)
+        ✓ Auth Routes POST /auth/refresh returns 200 with new accessToken for a valid refresh cookie (killed 7)
+        ~ Auth Routes POST /auth/refresh rotates the refresh token (new cookie differs from old) (covered 22)
+        ✓ Auth Routes POST /auth/refresh returns 401 when no refresh cookie is present (killed 2)
+        ✓ Auth Routes POST /auth/refresh returns 401 for a tampered / invalid refresh token (killed 3)
+        ✓ Auth Routes POST /auth/refresh returns 401 when the user no longer exists in the database (killed 3)
+      auth.service.test.ts
+        ~ registerUser creates user and returns data without passwordHash or deletedAt (covered 7)
+        ✓ registerUser hashes the password before persisting — never stores plain text (killed 2)
+        ~ registerUser throws ConflictError when email is already registered (covered 11)
+        ✓ registerUser ConflictError message identifies the conflict clearly (killed 1)
+        ✓ loginUser returns safe user for valid credentials (killed 2)
+        ~ loginUser throws UnauthorizedError for wrong password (covered 22)
+        ✓ loginUser throws UnauthorizedError for non-existent email (killed 1)
+        ✓ loginUser returns the same error message for missing email and wrong password (no enumeration) (killed 1)
+        ✓ loginUser calls verifyPassword even when user does not exist (timing attack prevention) (killed 1)
+        ~ loginUser treats soft-deleted users as non-existent (covered 21)
+        ✓ loginUser rejects login when the stored password hash is corrupted or unparseable (killed 1)
+        ✓ getUserById returns safe user when found (killed 3)
+        ✓ getUserById returns null when user not found (killed 1)
+        ✓ getUserById returns null for soft-deleted users (killed 1)
+    documents
+      documents.pdf.route.test.ts
+        ✓ Documents PDF Route GET /documents/:id/pdf returns 200 with application/pdf content type (killed 4)
+        ✓ Documents PDF Route GET /documents/:id/pdf returns Content-Disposition attachment header with sanitized filename (killed 3)
+        ~ Documents PDF Route GET /documents/:id/pdf returns the PDF bytes in the response body (covered 20)
+        ~ Documents PDF Route GET /documents/:id/pdf returns 404 when document does not exist (covered 20)
+        ~ Documents PDF Route GET /documents/:id/pdf returns 401 without authentication (covered 11)
+      documents.routes.test.ts
+        ✓ Documents Routes GET /documents returns 200 with an array of documents (killed 4)
+        ~ Documents Routes GET /documents returns 200 filtered by status query param (covered 17)
+        ✓ Documents Routes GET /documents returns 422 for invalid status query param (killed 2)
+        ✓ Documents Routes GET /documents returns 401 without authentication (killed 2)
+        ✓ Documents Routes POST /documents returns 201 with the created document (killed 3)
+        ✓ Documents Routes POST /documents returns 422 when title is missing (killed 2)
+        ~ Documents Routes POST /documents returns 422 when clientEmail is invalid (covered 14)
+        ~ Documents Routes POST /documents returns 422 when totalValue is not positive (covered 14)
+        ~ Documents Routes POST /documents returns 422 when content is missing (covered 14)
+        ~ Documents Routes POST /documents returns 401 without authentication (covered 11)
+        ✓ Documents Routes GET /documents/:id returns 200 with document and versions (killed 2)
+        ~ Documents Routes GET /documents/:id returns 404 when document does not exist (covered 20)
+        ~ Documents Routes GET /documents/:id returns 401 without authentication (covered 11)
+        ✓ Documents Routes PATCH /documents/:id returns 200 with the updated document (killed 12)
+        ✓ Documents Routes PATCH /documents/:id returns 404 when document does not exist (killed 1)
+        ✓ Documents Routes PATCH /documents/:id returns 422 when body is empty (killed 4)
+        ~ Documents Routes PATCH /documents/:id returns 422 when totalValue is zero (covered 18)
+        ~ Documents Routes PATCH /documents/:id returns 401 without authentication (covered 11)
+        ✓ Documents Routes PATCH /documents/:id/status returns 200 with the updated status (killed 6)
+        ✓ Documents Routes PATCH /documents/:id/status returns 422 for an invalid status value (killed 2)
+        ✓ Documents Routes PATCH /documents/:id/status returns 422 for an invalid transition (killed 2)
+        ~ Documents Routes PATCH /documents/:id/status returns 401 without authentication (covered 11)
+        ✓ Documents Routes DELETE /documents/:id returns 204 with no body (killed 4)
+        ✓ Documents Routes DELETE /documents/:id returns 404 when document does not exist (killed 1)
+        ~ Documents Routes DELETE /documents/:id returns 401 without authentication (covered 11)
+      documents.send.route.test.ts
+        ✓ Documents Send Email Route POST /documents/:id/send returns 200 with success message when email is sent (killed 6)
+        ✓ Documents Send Email Route POST /documents/:id/send returns 200 and sends to document clientEmail by default (killed 2)
+        ~ Documents Send Email Route POST /documents/:id/send returns 200 and sends to override email when provided (covered 27)
+        ✓ Documents Send Email Route POST /documents/:id/send returns 422 when recipientEmail is present but invalid (killed 2)
+        ~ Documents Send Email Route POST /documents/:id/send returns 404 when document does not exist (covered 24)
+        ~ Documents Send Email Route POST /documents/:id/send returns 401 without authentication (covered 11)
+      documents.service.test.ts
+        ✓ listDocuments returns all documents for the user in descending order (killed 4)
+        ✓ listDocuments filters by status when provided (killed 5)
+        ~ listDocuments returns empty array when user has no documents (covered 10)
+        ✓ getDocument returns document with versions when owned by user (killed 7)
+        ✓ getDocument throws NotFoundError when document does not exist (killed 1)
+        ~ getDocument throws NotFoundError when document belongs to another user (covered 17)
+        ✓ createDocument creates a document and initial version 1 in a transaction (killed 4)
+        ✓ createDocument sets userId from parameter, not from dto (killed 2)
+        ✓ updateDocument updates document metadata without creating a new version (killed 5)
+        ✓ updateDocument creates a new version when content is updated (killed 7)
+        ✓ updateDocument throws ValidationError when document is not DRAFT (killed 2)
+        ~ updateDocument throws NotFoundError when document not owned by user (covered 14)
+        ✓ changeDocumentStatus transitions DRAFT to SENT (killed 1)
+        ~ changeDocumentStatus transitions SENT to ACCEPTED (covered 14)
+        ~ changeDocumentStatus transitions SENT to REJECTED (covered 14)
+        ~ changeDocumentStatus transitions SENT to EXPIRED (covered 14)
+        ~ changeDocumentStatus throws ValidationError for invalid transition DRAFT → ACCEPTED (covered 18)
+        ~ changeDocumentStatus throws ValidationError for invalid transition ACCEPTED → DRAFT (covered 19)
+        ~ changeDocumentStatus throws NotFoundError when document not owned by user (covered 14)
+        ✓ deleteDocument deletes a DRAFT document (killed 2)
+        ✓ deleteDocument throws ValidationError when document is not DRAFT (killed 2)
+        ~ deleteDocument throws NotFoundError when document not owned by user (covered 14)
+      pdf.service.test.ts
+        ✘ generateDocumentPdf returns a Buffer instance (covered 0)
+        ✘ generateDocumentPdf returns a non-empty PDF (byte length > 0) (covered 0)
+        ✘ generateDocumentPdf generates a valid PDF (starts with %PDF magic bytes) (covered 0)
+        ✘ generateDocumentPdf handles empty content object (no blocks key) (covered 0)
+        ✘ generateDocumentPdf handles null/empty blocks array (covered 0)
+        ✘ generateDocumentPdf renders heading blocks without throwing (covered 0)
+        ✘ generateDocumentPdf renders mixed heading and text blocks (covered 0)
+        ✘ generateDocumentPdf renders many blocks that overflow to a second page (covered 0)
+        ✘ generateDocumentPdf gracefully handles unknown block types (covered 0)
+    templates
+      templates.routes.test.ts
+        ✓ Templates Routes GET /templates returns 200 with an array of templates (killed 2)
+        ~ Templates Routes GET /templates returns 200 with an empty array when user has no templates (covered 8)
+        ~ Templates Routes GET /templates returns 401 without authentication (covered 11)
+        ✓ Templates Routes POST /templates returns 201 with the created template (killed 3)
+        ~ Templates Routes POST /templates returns 201 with CONTRACT type (covered 9)
+        ✓ Templates Routes POST /templates returns 422 when name is missing (killed 2)
+        ~ Templates Routes POST /templates returns 422 when type is invalid (covered 14)
+        ~ Templates Routes POST /templates returns 422 when content is missing (covered 14)
+        ~ Templates Routes POST /templates returns 401 without authentication (covered 11)
+        ✓ Templates Routes GET /templates/:id returns 200 with the template (killed 5)
+        ✓ Templates Routes GET /templates/:id returns 404 when template does not exist (killed 2)
+        ~ Templates Routes GET /templates/:id returns 401 without authentication (covered 11)
+        ✓ Templates Routes PATCH /templates/:id returns 200 with the updated template (killed 5)
+        ~ Templates Routes PATCH /templates/:id returns 404 when template does not exist (covered 24)
+        ✓ Templates Routes PATCH /templates/:id returns 422 when body is empty (killed 4)
+        ~ Templates Routes PATCH /templates/:id returns 422 when type is invalid (covered 14)
+        ~ Templates Routes PATCH /templates/:id returns 401 without authentication (covered 11)
+        ✓ Templates Routes DELETE /templates/:id returns 204 with no body (killed 1)
+        ✓ Templates Routes DELETE /templates/:id returns 404 when template does not exist (killed 1)
+        ~ Templates Routes DELETE /templates/:id returns 401 without authentication (covered 11)
+      templates.service.test.ts
+        ✓ listTemplates returns all templates owned by the user in descending order (killed 4)
+        ~ listTemplates returns an empty array when user has no templates (covered 5)
+        ✓ getTemplate returns the template when owned by user (killed 2)
+        ~ getTemplate throws NotFoundError when template does not exist (covered 14)
+        ~ getTemplate throws NotFoundError when template belongs to another user (covered 14)
+        ✓ createTemplate creates and returns a template with the user id (killed 1)
+        ✓ createTemplate passes correct data including userId to prisma (killed 2)
+        ✓ updateTemplate updates and returns the template (killed 4)
+        ~ updateTemplate throws NotFoundError when template not owned by user (covered 14)
+        ✓ deleteTemplate deletes the template when owned by user (killed 2)
+        ~ deleteTemplate throws NotFoundError when template not owned by user (covered 14)
+    users
+      users.routes.test.ts
+        ✓ Users Routes GET /users/me returns 200 with the authenticated user profile (killed 8)
+        ~ Users Routes GET /users/me never exposes passwordHash in the response (covered 14)
+        ✓ Users Routes GET /users/me returns 401 without a Bearer token (killed 1)
+        ~ Users Routes GET /users/me returns 401 with an invalid token (covered 11)
+        ✓ Users Routes GET /users/me returns 404 when authenticated user has been deleted (killed 3)
+        ✓ Users Routes PATCH /users/me returns 200 with updated profile (killed 6)
+        ~ Users Routes PATCH /users/me accepts partial updates — only sends provided fields (covered 14)
+        ✓ Users Routes PATCH /users/me returns 422 for unknown fields in the payload (killed 4)
+        ~ Users Routes PATCH /users/me returns 422 when name is an empty string (covered 18)
+        ~ Users Routes PATCH /users/me returns 422 when no updatable fields are provided (covered 18)
+        ~ Users Routes PATCH /users/me returns 401 without a token (covered 11)
+        ✓ Users Routes PATCH /users/me/password returns 200 on successful password change (killed 11)
+        ✓ Users Routes PATCH /users/me/password returns 401 when currentPassword is incorrect (killed 2)
+        ✓ Users Routes PATCH /users/me/password returns 422 when newPassword is the same as currentPassword (killed 1)
+        ✓ Users Routes PATCH /users/me/password returns 422 for newPassword shorter than 8 characters (killed 2)
+        ~ Users Routes PATCH /users/me/password returns 422 when currentPassword is missing (covered 14)
+        ~ Users Routes PATCH /users/me/password returns 401 without a Bearer token (covered 11)
+        ✓ Users Routes DELETE /users/me returns 204 and soft-deletes the account (killed 1)
+        ✓ Users Routes DELETE /users/me sets deletedAt on the correct user record (killed 2)
+        ~ Users Routes DELETE /users/me returns 401 without a Bearer token (covered 11)
+      users.service.test.ts
+        ~ getProfile returns safe user without passwordHash or deletedAt (covered 11)
+        ~ getProfile throws NotFoundError when user does not exist (covered 15)
+        ~ getProfile throws NotFoundError for soft-deleted users (covered 17)
+        ~ updateProfile updates and returns safe profile (covered 4)
+        ✓ updateProfile only passes provided fields to prisma (partial update) (killed 1)
+        ✓ updateProfile passes the correct userId as the where clause (killed 1)
+        ✓ changePassword hashes the new password and updates the record (killed 2)
+        ~ changePassword throws UnauthorizedError when currentPassword is wrong (covered 15)
+        ✓ changePassword throws UnauthorizedError when user not found (killed 1)
+        ✓ changePassword throws ValidationError when new password equals current password (killed 1)
+        ~ changePassword never updates the record if currentPassword verification fails (covered 15)
+        ✓ softDeleteUser sets deletedAt to current timestamp (soft delete, not hard delete) (killed 2)
+        ~ softDeleteUser does NOT call prisma.user.delete (only soft-deletes) (covered 4)
+  shared
+    errors/AppError.test.ts
+      ~ AppError creates an error with default status 500 (covered 3)
+      ~ AppError creates an error with a custom status code (covered 3)
+      ~ AppError is an instance of Error (covered 3)
+      ~ AppError captures stack trace (covered 3)
+      ✓ NotFoundError returns 404 with default message (killed 3)
+      ~ NotFoundError returns 404 with custom resource name (covered 6)
+      ✓ UnauthorizedError returns 401 with default message (killed 2)
+      ✓ ForbiddenError returns 403 (killed 2)
+      ✓ ConflictError returns 409 (killed 1)
+      ✓ ValidationError returns 422 (killed 2)
+      ✓ UnprocessableEntityError returns 422 (killed 1)
+    utils
+      email.service.test.ts
+        ✘ sendDocumentByEmail calls sendMail once with the correct recipient (covered 0)
+        ✘ sendDocumentByEmail sets the from address from SMTP_FROM env var (covered 0)
+        ✘ sendDocumentByEmail includes the document title in the subject (covered 0)
+        ✘ sendDocumentByEmail includes the sender name in the subject (covered 0)
+        ✘ sendDocumentByEmail attaches the PDF buffer with application/pdf content type (covered 0)
+        ✘ sendDocumentByEmail names the PDF attachment after the document title (covered 0)
+        ✘ sendDocumentByEmail resolves without throwing on success (covered 0)
+        ✘ sendDocumentByEmail propagates errors thrown by sendMail (covered 0)
+      hash.test.ts
+        ✓ hashPassword returns a non-empty string (killed 1)
+        ~ hashPassword produces different hashes for the same input (random salt) (covered 1)
+        ~ hashPassword does not return the plain-text password (covered 1)
+        ✓ verifyPassword returns true for a matching password (killed 2)
+        ~ verifyPassword returns false for a wrong password (covered 3)
+        ✓ verifyPassword returns false (not throws) for an invalid hash (killed 2)
+        ~ verifyPassword returns false for an empty password against a valid hash (covered 3)
+      logger.test.ts
+        ✘ logger creates a pino logger instance (covered 0)
+        ✘ logger level uses "silent" level in test environment to suppress output (covered 0)
+        ✘ logger redact configuration censors redacted fields with [REDACTED] (covered 0)
+        ✘ logger redact configuration includes all sensitive field paths in the redact list (covered 0)
+        ✘ logger transport configuration uses pino-pretty transport in non-production environments (covered 0)
+        ✘ logger transport configuration configures pino-pretty with colorize and timestamp options (covered 0)
+      rate-limit.test.ts
+        ✘ AUTH_RATE_LIMIT errorResponseBuilder returns 429 status code (covered 0)
+        ✘ AUTH_RATE_LIMIT errorResponseBuilder returns "Too Many Requests" error field (covered 0)
+        ✘ AUTH_RATE_LIMIT errorResponseBuilder includes 15 minutes in the message (covered 0)
+        ✘ REFRESH_RATE_LIMIT errorResponseBuilder returns 429 status code (covered 0)
+        ✘ REFRESH_RATE_LIMIT errorResponseBuilder returns "Too Many Requests" error field (covered 0)
+        ✘ REFRESH_RATE_LIMIT errorResponseBuilder message indicates to try again later (covered 0)
+        ✘ PASSWORD_RESET_RATE_LIMIT errorResponseBuilder returns 429 status code (covered 0)
+        ✘ PASSWORD_RESET_RATE_LIMIT errorResponseBuilder returns "Too Many Requests" error field (covered 0)
+        ✘ PASSWORD_RESET_RATE_LIMIT errorResponseBuilder includes 1 hour in the message (covered 0)
+  app.test.ts
+    ✘ GET /health returns 200 with status ok (covered 0)
+    ✘ GET /health returns a valid ISO timestamp (covered 0)
+    ~ Error handling returns the statusCode and message for a known AppError (covered 3)
+    ✘ Error handling returns 500 with generic message and uses error.name for unexpected errors (covered 0)
+    ✘ Error handling falls back to "Error" as the error field when error.name is absent (covered 0)
+    ~ Error handling uses original error message for 4xx responses (not the generic 500 fallback) (covered 3)
+    ~ Error handling logs 5xx errors but does NOT log 4xx errors (covered 3)
+    ✘ Error handling returns 404 for unknown routes (covered 0)
+    ✘ Rate limiting returns 429 after exceeding the rate limit (covered 0)
+    ✘ Swagger /docs serves docs in test (non-production) environment (covered 0)
+
+[NoCoverage] StringLiteral
+src/modules/auth/auth.routes.ts:19:35
+-     env.NODE_ENV === 'production' ? '__Secure-refresh_token' : 'refresh_token'
++     env.NODE_ENV === 'production' ? "" : 'refresh_token'
+
+[NoCoverage] StringLiteral
+src/modules/auth/auth.routes.ts:51:70
+-           throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++           throw new ValidationError(result.error.issues[0]?.message ?? "")
+
+[NoCoverage] StringLiteral
+src/modules/auth/auth.routes.ts:78:70
+-           throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++           throw new ValidationError(result.error.issues[0]?.message ?? "")
+
+[Survived] LogicalOperator
+src/modules/auth/auth.routes.ts:51:35
+-           throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++           throw new ValidationError(result.error.issues[0]?.message && 'Validation failed')
+Tests ran:
+    Auth Routes POST /auth/register returns 422 for invalid email format
+    Auth Routes POST /auth/register returns 422 for password shorter than 8 characters
+    Auth Routes POST /auth/register returns 422 when name is missing
+
+
+[Survived] ObjectLiteral
+src/modules/auth/auth.routes.ts:36:5
+-       { sub: userId, jti: randomUUID() },
++       {},
+Tests ran:
+    Auth Routes POST /auth/register returns 201 with accessToken and user payload on success
+    Auth Routes POST /auth/register sets httpOnly refresh_token cookie on success
+    Auth Routes POST /auth/register access token contains correct sub, email, and role claims
+  and 5 more tests!
+
+
+[Survived] OptionalChaining
+src/modules/auth/auth.routes.ts:51:35
+-           throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++           throw new ValidationError(result.error.issues[0].message ?? 'Validation failed')
+Tests ran:
+    Auth Routes POST /auth/register returns 422 for invalid email format
+    Auth Routes POST /auth/register returns 422 for password shorter than 8 characters
+    Auth Routes POST /auth/register returns 422 when name is missing
+
+
+[Survived] ObjectLiteral
+src/modules/auth/auth.routes.ts:40:5
+-       { expiresIn: env.JWT_REFRESH_EXPIRY as jwt.SignOptions['expiresIn'] },
++       {},
+Tests ran:
+    Auth Routes POST /auth/register returns 201 with accessToken and user payload on success
+    Auth Routes POST /auth/register sets httpOnly refresh_token cookie on success
+    Auth Routes POST /auth/register access token contains correct sub, email, and role claims
+  and 5 more tests!
+
+
+[Survived] BlockStatement
+src/modules/auth/auth.routes.ts:34:51
+-   function signRefreshToken(userId: string): string {
+-     return jwt.sign(
+-       { sub: userId, jti: randomUUID() },
+-       env.JWT_REFRESH_SECRET,
+-       // Cast to SignOptions['expiresIn']: our Zod schema validates the duration
+-       // format, but TypeScript can't narrow `string` to ms.StringValue at compile time.
+-       { expiresIn: env.JWT_REFRESH_EXPIRY as jwt.SignOptions['expiresIn'] },
+-     )
+-   }
++   function signRefreshToken(userId: string): string {}
+Tests ran:
+    Auth Routes POST /auth/register returns 201 with accessToken and user payload on success
+    Auth Routes POST /auth/register sets httpOnly refresh_token cookie on success
+    Auth Routes POST /auth/register access token contains correct sub, email, and role claims
+  and 5 more tests!
+
+
+[Survived] LogicalOperator
+src/modules/auth/auth.routes.ts:78:35
+-           throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++           throw new ValidationError(result.error.issues[0]?.message && 'Validation failed')
+Tests ran:
+    Auth Routes POST /auth/login returns 422 for missing email field
+
+
+[Survived] OptionalChaining
+src/modules/auth/auth.routes.ts:78:35
+-           throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++           throw new ValidationError(result.error.issues[0].message ?? 'Validation failed')
+Tests ran:
+    Auth Routes POST /auth/login returns 422 for missing email field
+
+
+[Survived] ObjectLiteral
+src/modules/auth/auth.routes.ts:83:40
+-         const accessToken = app.jwt.sign({
+-           sub: user.id,
+-           email: user.email,
+-           role: 'authenticated' as const,
+-         })
++         const accessToken = app.jwt.sign({})
+Tests ran:
+    Auth Routes POST /auth/login returns 200 with accessToken on valid credentials
+    Auth Routes POST /auth/login sets httpOnly refresh_token cookie on login
+
+
+[Survived] ObjectLiteral
+src/modules/auth/auth.routes.ts:94:15
+-           user: { id: user.id, email: user.email, name: user.name },
++           user: {},
+Tests ran:
+    Auth Routes POST /auth/login returns 200 with accessToken on valid credentials
+    Auth Routes POST /auth/login sets httpOnly refresh_token cookie on login
+
+
+[Survived] ObjectLiteral
+src/modules/auth/auth.routes.ts:104:46
+-         reply.clearCookie(REFRESH_COOKIE_NAME, { path: '/' })
++         reply.clearCookie(REFRESH_COOKIE_NAME, {})
+Tests ran:
+    Auth Routes POST /auth/logout returns 200 and clears the refresh cookie when authenticated
+
+
+[Survived] StringLiteral
+src/modules/auth/auth.routes.ts:104:54
+-         reply.clearCookie(REFRESH_COOKIE_NAME, { path: '/' })
++         reply.clearCookie(REFRESH_COOKIE_NAME, { path: "" })
+Tests ran:
+    Auth Routes POST /auth/logout returns 200 and clears the refresh cookie when authenticated
+
+
+[Survived] ObjectLiteral
+src/modules/auth/auth.routes.ts:129:40
+-         const accessToken = app.jwt.sign({
+-           sub: user.id,
+-           email: user.email,
+-           role: 'authenticated' as const,
+-         })
++         const accessToken = app.jwt.sign({})
+Tests ran:
+    Auth Routes POST /auth/refresh returns 200 with new accessToken for a valid refresh cookie
+    Auth Routes POST /auth/refresh rotates the refresh token (new cookie differs from old)
+
+
+[Survived] ObjectLiteral
+src/modules/auth/auth.service.ts:29:49
+-     const existing = await prisma.user.findUnique({
+-       where: { email: data.email },
+-     })
++     const existing = await prisma.user.findUnique({})
+Tests ran:
+    Auth Routes POST /auth/register returns 201 with accessToken and user payload on success
+    Auth Routes POST /auth/register sets httpOnly refresh_token cookie on success
+    Auth Routes POST /auth/register access token contains correct sub, email, and role claims
+  and 6 more tests!
+
+
+[Survived] ObjectLiteral
+src/modules/auth/auth.service.ts:30:12
+-       where: { email: data.email },
++       where: {},
+Tests ran:
+    Auth Routes POST /auth/register returns 201 with accessToken and user payload on success
+    Auth Routes POST /auth/register sets httpOnly refresh_token cookie on success
+    Auth Routes POST /auth/register access token contains correct sub, email, and role claims
+  and 6 more tests!
+
+
+[Survived] ObjectLiteral
+src/modules/auth/auth.service.ts:46:45
+-     const user = await prisma.user.findUnique({
+-       where: { email: data.email },
+-     })
++     const user = await prisma.user.findUnique({})
+Tests ran:
+    Auth Routes POST /auth/login returns 200 with accessToken on valid credentials
+    Auth Routes POST /auth/login sets httpOnly refresh_token cookie on login
+    Auth Routes POST /auth/login returns 401 for wrong password
+  and 8 more tests!
+
+
+[Survived] ObjectLiteral
+src/modules/auth/auth.service.ts:47:12
+-       where: { email: data.email },
++       where: {},
+Tests ran:
+    Auth Routes POST /auth/login returns 200 with accessToken on valid credentials
+    Auth Routes POST /auth/login sets httpOnly refresh_token cookie on login
+    Auth Routes POST /auth/login returns 401 for wrong password
+  and 8 more tests!
+
+
+[Survived] ArrowFunction
+src/modules/auth/auth.service.ts:54:73
+-     const valid = await verifyPassword(hashToVerify, data.password).catch(() => false)
++     const valid = await verifyPassword(hashToVerify, data.password).catch(() => undefined)
+Tests ran:
+    Auth Routes POST /auth/login returns 200 with accessToken on valid credentials
+    Auth Routes POST /auth/login sets httpOnly refresh_token cookie on login
+    Auth Routes POST /auth/login returns 401 for wrong password
+  and 8 more tests!
+
+
+[Survived] ConditionalExpression
+src/modules/auth/auth.service.ts:57:7
+-     if (!user || user.deletedAt !== null || !valid) {
++     if (false || !valid) {
+Tests ran:
+    Auth Routes POST /auth/login returns 200 with accessToken on valid credentials
+    Auth Routes POST /auth/login sets httpOnly refresh_token cookie on login
+    Auth Routes POST /auth/login returns 401 for wrong password
+  and 8 more tests!
+
+
+[Survived] ConditionalExpression
+src/modules/auth/auth.service.ts:57:16
+-     if (!user || user.deletedAt !== null || !valid) {
++     if (!user || false || !valid) {
+Tests ran:
+    Auth Routes POST /auth/login returns 200 with accessToken on valid credentials
+    Auth Routes POST /auth/login sets httpOnly refresh_token cookie on login
+    Auth Routes POST /auth/login returns 401 for wrong password
+  and 6 more tests!
+
+
+[Survived] ObjectLiteral
+src/modules/auth/auth.service.ts:68:45
+-     const user = await prisma.user.findUnique({ where: { id } })
++     const user = await prisma.user.findUnique({})
+Tests ran:
+    Auth Routes POST /auth/refresh returns 200 with new accessToken for a valid refresh cookie
+    Auth Routes POST /auth/refresh rotates the refresh token (new cookie differs from old)
+    Auth Routes POST /auth/refresh returns 401 when the user no longer exists in the database
+  and 3 more tests!
+
+
+[Survived] ObjectLiteral
+src/modules/auth/auth.service.ts:68:54
+-     const user = await prisma.user.findUnique({ where: { id } })
++     const user = await prisma.user.findUnique({ where: {} })
+Tests ran:
+    Auth Routes POST /auth/refresh returns 200 with new accessToken for a valid refresh cookie
+    Auth Routes POST /auth/refresh rotates the refresh token (new cookie differs from old)
+    Auth Routes POST /auth/refresh returns 401 when the user no longer exists in the database
+  and 3 more tests!
+
+
+[NoCoverage] StringLiteral
+src/modules/documents/documents.routes.ts:35:73
+-         throw new ValidationError(queryResult.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(queryResult.error.issues[0]?.message ?? "")
+
+[NoCoverage] StringLiteral
+src/modules/documents/documents.routes.ts:46:68
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0]?.message ?? "")
+
+[NoCoverage] StringLiteral
+src/modules/documents/documents.routes.ts:65:68
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0]?.message ?? "")
+
+[NoCoverage] StringLiteral
+src/modules/documents/documents.routes.ts:77:68
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0]?.message ?? "")
+
+[NoCoverage] StringLiteral
+src/modules/documents/documents.routes.ts:114:49
+-           parseResult.error.issues[0]?.message ?? 'Validation failed',
++           parseResult.error.issues[0]?.message ?? "",
+
+[Survived] LogicalOperator
+src/modules/documents/documents.routes.ts:35:33
+-         throw new ValidationError(queryResult.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(queryResult.error.issues[0]?.message && 'Validation failed')
+Tests ran:
+    Documents Routes GET /documents returns 422 for invalid status query param
+
+
+[Survived] OptionalChaining
+src/modules/documents/documents.routes.ts:35:33
+-         throw new ValidationError(queryResult.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(queryResult.error.issues[0].message ?? 'Validation failed')
+Tests ran:
+    Documents Routes GET /documents returns 422 for invalid status query param
+
+
+[Survived] LogicalOperator
+src/modules/documents/documents.routes.ts:46:33
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0]?.message && 'Validation failed')
+Tests ran:
+    Documents Routes POST /documents returns 422 when title is missing
+    Documents Routes POST /documents returns 422 when clientEmail is invalid
+    Documents Routes POST /documents returns 422 when totalValue is not positive
+  and 1 more test!
+
+
+[Survived] OptionalChaining
+src/modules/documents/documents.routes.ts:46:33
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0].message ?? 'Validation failed')
+Tests ran:
+    Documents Routes POST /documents returns 422 when title is missing
+    Documents Routes POST /documents returns 422 when clientEmail is invalid
+    Documents Routes POST /documents returns 422 when totalValue is not positive
+  and 1 more test!
+
+
+[Survived] LogicalOperator
+src/modules/documents/documents.routes.ts:65:33
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0]?.message && 'Validation failed')
+Tests ran:
+    Documents Routes PATCH /documents/:id returns 422 when body is empty
+    Documents Routes PATCH /documents/:id returns 422 when totalValue is zero
+
+
+[Survived] OptionalChaining
+src/modules/documents/documents.routes.ts:65:33
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0].message ?? 'Validation failed')
+Tests ran:
+    Documents Routes PATCH /documents/:id returns 422 when body is empty
+    Documents Routes PATCH /documents/:id returns 422 when totalValue is zero
+
+
+[Survived] LogicalOperator
+src/modules/documents/documents.routes.ts:77:33
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0]?.message && 'Validation failed')
+Tests ran:
+    Documents Routes PATCH /documents/:id/status returns 422 for an invalid status value
+
+
+[Survived] Regex
+src/modules/documents/documents.routes.ts:97:45
+-       const safeName = document.title.replace(/[^a-zA-Z0-9]/g, '_')
++       const safeName = document.title.replace(/[a-zA-Z0-9]/g, '_')
+Tests ran:
+    Documents PDF Route GET /documents/:id/pdf returns 200 with application/pdf content type
+    Documents PDF Route GET /documents/:id/pdf returns Content-Disposition attachment header with sanitized filename
+    Documents PDF Route GET /documents/:id/pdf returns the PDF bytes in the response body
+
+
+[Survived] OptionalChaining
+src/modules/documents/documents.routes.ts:77:33
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0].message ?? 'Validation failed')
+Tests ran:
+    Documents Routes PATCH /documents/:id/status returns 422 for an invalid status value
+
+
+[Survived] StringLiteral
+src/modules/documents/documents.routes.ts:97:62
+-       const safeName = document.title.replace(/[^a-zA-Z0-9]/g, '_')
++       const safeName = document.title.replace(/[^a-zA-Z0-9]/g, "")
+Tests ran:
+    Documents PDF Route GET /documents/:id/pdf returns 200 with application/pdf content type
+    Documents PDF Route GET /documents/:id/pdf returns Content-Disposition attachment header with sanitized filename
+    Documents PDF Route GET /documents/:id/pdf returns the PDF bytes in the response body
+
+
+[Survived] LogicalOperator
+src/modules/documents/documents.routes.ts:114:9
+-           parseResult.error.issues[0]?.message ?? 'Validation failed',
++           parseResult.error.issues[0]?.message && 'Validation failed',
+Tests ran:
+    Documents Send Email Route POST /documents/:id/send returns 422 when recipientEmail is present but invalid
+
+
+[Survived] OptionalChaining
+src/modules/documents/documents.routes.ts:114:9
+-           parseResult.error.issues[0]?.message ?? 'Validation failed',
++           parseResult.error.issues[0].message ?? 'Validation failed',
+Tests ran:
+    Documents Send Email Route POST /documents/:id/send returns 422 when recipientEmail is present but invalid
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.routes.ts:122:49
+-       const sender = await prisma.user.findUnique({
+-         where: { id: request.user.sub },
+-         select: { name: true },
+-       })
++       const sender = await prisma.user.findUnique({})
+Tests ran:
+    Documents Send Email Route POST /documents/:id/send returns 200 with success message when email is sent
+    Documents Send Email Route POST /documents/:id/send returns 200 and sends to document clientEmail by default
+    Documents Send Email Route POST /documents/:id/send returns 200 and sends to override email when provided
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.routes.ts:123:14
+-         where: { id: request.user.sub },
++         where: {},
+Tests ran:
+    Documents Send Email Route POST /documents/:id/send returns 200 with success message when email is sent
+    Documents Send Email Route POST /documents/:id/send returns 200 and sends to document clientEmail by default
+    Documents Send Email Route POST /documents/:id/send returns 200 and sends to override email when provided
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.routes.ts:124:15
+-         select: { name: true },
++         select: {},
+Tests ran:
+    Documents Send Email Route POST /documents/:id/send returns 200 with success message when email is sent
+    Documents Send Email Route POST /documents/:id/send returns 200 and sends to document clientEmail by default
+    Documents Send Email Route POST /documents/:id/send returns 200 and sends to override email when provided
+
+
+[Survived] BooleanLiteral
+src/modules/documents/documents.routes.ts:124:23
+-         select: { name: true },
++         select: { name: false },
+Tests ran:
+    Documents Send Email Route POST /documents/:id/send returns 200 with success message when email is sent
+    Documents Send Email Route POST /documents/:id/send returns 200 and sends to document clientEmail by default
+    Documents Send Email Route POST /documents/:id/send returns 200 and sends to override email when provided
+
+
+[Survived] LogicalOperator
+src/modules/documents/documents.routes.ts:126:24
+-       const senderName = sender?.name ?? request.user.email
++       const senderName = sender?.name && request.user.email
+Tests ran:
+    Documents Send Email Route POST /documents/:id/send returns 200 with success message when email is sent
+    Documents Send Email Route POST /documents/:id/send returns 200 and sends to document clientEmail by default
+    Documents Send Email Route POST /documents/:id/send returns 200 and sends to override email when provided
+
+
+[Survived] OptionalChaining
+src/modules/documents/documents.routes.ts:126:24
+-       const senderName = sender?.name ?? request.user.email
++       const senderName = sender.name ?? request.user.email
+Tests ran:
+    Documents Send Email Route POST /documents/:id/send returns 200 with success message when email is sent
+    Documents Send Email Route POST /documents/:id/send returns 200 and sends to document clientEmail by default
+    Documents Send Email Route POST /documents/:id/send returns 200 and sends to override email when provided
+
+
+[Survived] StringLiteral
+src/modules/documents/documents.routes.ts:137:46
+-       return reply.status(200).send({ message: `Document sent to ${to}` })
++       return reply.status(200).send({ message: `` })
+Tests ran:
+    Documents Send Email Route POST /documents/:id/send returns 200 with success message when email is sent
+    Documents Send Email Route POST /documents/:id/send returns 200 and sends to document clientEmail by default
+    Documents Send Email Route POST /documents/:id/send returns 200 and sends to override email when provided
+
+
+[NoCoverage] ObjectLiteral
+src/modules/documents/documents.service.ts:104:37
+-       ...(totalValue !== undefined && { totalValue: totalValue.toString() }),
++       ...(totalValue !== undefined && {}),
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.service.ts:23:56
+-     const doc = await prisma.document.findFirst({ where: { id: documentId, userId } })
++     const doc = await prisma.document.findFirst({ where: {} })
+Tests ran:
+    Documents Routes PATCH /documents/:id returns 200 with the updated document
+    Documents Routes PATCH /documents/:id returns 404 when document does not exist
+    Documents Routes PATCH /documents/:id/status returns 200 with the updated status
+  and 17 more tests!
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.service.ts:23:47
+-     const doc = await prisma.document.findFirst({ where: { id: documentId, userId } })
++     const doc = await prisma.document.findFirst({})
+Tests ran:
+    Documents Routes PATCH /documents/:id returns 200 with the updated document
+    Documents Routes PATCH /documents/:id returns 404 when document does not exist
+    Documents Routes PATCH /documents/:id/status returns 200 with the updated status
+  and 17 more tests!
+
+
+[Survived] StringLiteral
+src/modules/documents/documents.service.ts:24:37
+-     if (!doc) throw new NotFoundError('Document')
++     if (!doc) throw new NotFoundError("")
+Tests ran:
+    Documents Routes PATCH /documents/:id returns 404 when document does not exist
+    Documents Routes DELETE /documents/:id returns 404 when document does not exist
+    updateDocument throws NotFoundError when document not owned by user
+  and 2 more tests!
+
+
+[Survived] ConditionalExpression
+src/modules/documents/documents.service.ts:35:26
+-       where: { userId, ...(status !== undefined && { status }) },
++       where: { userId, ...(true && { status }) },
+Tests ran:
+    Documents Routes GET /documents returns 200 with an array of documents
+    Documents Routes GET /documents returns 200 filtered by status query param
+    listDocuments returns all documents for the user in descending order
+  and 2 more tests!
+
+
+[Survived] StringLiteral
+src/modules/documents/documents.service.ts:71:36
+-           currency: data.currency ?? 'BRL',
++           currency: data.currency ?? "",
+Tests ran:
+    createDocument creates a document and initial version 1 in a transaction
+    createDocument sets userId from parameter, not from dto
+
+
+[Survived] StringLiteral
+src/modules/documents/documents.service.ts:98:31
+-       throw new ValidationError('Only DRAFT documents can be edited')
++       throw new ValidationError("")
+Tests ran:
+    updateDocument throws ValidationError when document is not DRAFT
+
+
+[Survived] LogicalOperator
+src/modules/documents/documents.service.ts:68:25
+-           clientDocument: data.clientDocument ?? null,
++           clientDocument: data.clientDocument && null,
+Tests ran:
+    Documents Routes POST /documents returns 201 with the created document
+    createDocument creates a document and initial version 1 in a transaction
+    createDocument sets userId from parameter, not from dto
+
+
+[Survived] LogicalOperator
+src/modules/documents/documents.service.ts:64:21
+-           templateId: data.templateId ?? null,
++           templateId: data.templateId && null,
+Tests ran:
+    Documents Routes POST /documents returns 201 with the created document
+    createDocument creates a document and initial version 1 in a transaction
+    createDocument sets userId from parameter, not from dto
+
+
+[Survived] LogicalOperator
+src/modules/documents/documents.service.ts:71:19
+-           currency: data.currency ?? 'BRL',
++           currency: data.currency && 'BRL',
+Tests ran:
+    Documents Routes POST /documents returns 201 with the created document
+    createDocument creates a document and initial version 1 in a transaction
+    createDocument sets userId from parameter, not from dto
+
+
+[Survived] LogicalOperator
+src/modules/documents/documents.service.ts:72:21
+-           validUntil: data.validUntil ?? null,
++           validUntil: data.validUntil && null,
+Tests ran:
+    Documents Routes POST /documents returns 201 with the created document
+    createDocument creates a document and initial version 1 in a transaction
+    createDocument sets userId from parameter, not from dto
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.service.ts:102:22
+-     const baseUpdate = {
+-       ...rest,
+-       ...(totalValue !== undefined && { totalValue: totalValue.toString() }),
+-     }
++     const baseUpdate = {}
+Tests ran:
+    Documents Routes PATCH /documents/:id returns 200 with the updated document
+    updateDocument updates document metadata without creating a new version
+    updateDocument creates a new version when content is updated
+
+
+[Survived] ConditionalExpression
+src/modules/documents/documents.service.ts:104:9
+-       ...(totalValue !== undefined && { totalValue: totalValue.toString() }),
++       ...(true),
+Tests ran:
+    Documents Routes PATCH /documents/:id returns 200 with the updated document
+    updateDocument updates document metadata without creating a new version
+    updateDocument creates a new version when content is updated
+
+
+[Survived] ConditionalExpression
+src/modules/documents/documents.service.ts:104:9
+-       ...(totalValue !== undefined && { totalValue: totalValue.toString() }),
++       ...(false),
+Tests ran:
+    Documents Routes PATCH /documents/:id returns 200 with the updated document
+    updateDocument updates document metadata without creating a new version
+    updateDocument creates a new version when content is updated
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.service.ts:108:56
+-       const agg = await prisma.documentVersion.aggregate({
+-         _max: { version: true },
+-         where: { documentId },
+-       })
++       const agg = await prisma.documentVersion.aggregate({})
+Tests ran:
+    updateDocument creates a new version when content is updated
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.service.ts:109:13
+-         _max: { version: true },
++         _max: {},
+Tests ran:
+    updateDocument creates a new version when content is updated
+
+
+[Survived] BooleanLiteral
+src/modules/documents/documents.service.ts:109:24
+-         _max: { version: true },
++         _max: { version: false },
+Tests ran:
+    updateDocument creates a new version when content is updated
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.service.ts:110:14
+-         where: { documentId },
++         where: {},
+Tests ran:
+    updateDocument creates a new version when content is updated
+
+
+[Survived] StringLiteral
+src/modules/documents/documents.service.ts:50:37
+-     if (!doc) throw new NotFoundError('Document')
++     if (!doc) throw new NotFoundError("")
+Tests ran:
+    Documents Routes GET /documents/:id returns 404 when document does not exist
+    getDocument throws NotFoundError when document does not exist
+    getDocument throws NotFoundError when document belongs to another user
+  and 2 more tests!
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.service.ts:122:33
+-         return tx.document.update({
+-           where: { id: documentId },
+-           data: { ...baseUpdate, content: content as Prisma.InputJsonValue },
+-         })
++         return tx.document.update({})
+Tests ran:
+    updateDocument creates a new version when content is updated
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.service.ts:123:16
+-           where: { id: documentId },
++           where: {},
+Tests ran:
+    updateDocument creates a new version when content is updated
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.service.ts:124:15
+-           data: { ...baseUpdate, content: content as Prisma.InputJsonValue },
++           data: {},
+Tests ran:
+    updateDocument creates a new version when content is updated
+
+
+[Survived] ArrayDeclaration
+src/modules/documents/documents.service.ts:144:70
+-     const allowed = VALID_TRANSITIONS[doc.status as DocumentStatus] ?? []
++     const allowed = VALID_TRANSITIONS[doc.status as DocumentStatus] ?? ["Stryker was here"]
+Tests ran:
+    changeDocumentStatus throws ValidationError for invalid transition ACCEPTED → DRAFT
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.service.ts:130:12
+-       where: { id: documentId },
++       where: {},
+Tests ran:
+    Documents Routes PATCH /documents/:id returns 200 with the updated document
+    updateDocument updates document metadata without creating a new version
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.service.ts:129:33
+-     return prisma.document.update({
+-       where: { id: documentId },
+-       data: baseUpdate,
+-     })
++     return prisma.document.update({})
+Tests ran:
+    Documents Routes PATCH /documents/:id returns 200 with the updated document
+    updateDocument updates document metadata without creating a new version
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.service.ts:152:12
+-       where: { id: documentId },
++       where: {},
+Tests ran:
+    Documents Routes PATCH /documents/:id/status returns 200 with the updated status
+    changeDocumentStatus transitions DRAFT to SENT
+    changeDocumentStatus transitions SENT to ACCEPTED
+  and 2 more tests!
+
+
+[Survived] StringLiteral
+src/modules/documents/documents.service.ts:147:7
+-         `Cannot transition from ${doc.status} to ${newStatus}`,
++         ``,
+Tests ran:
+    Documents Routes PATCH /documents/:id/status returns 422 for an invalid transition
+    changeDocumentStatus throws ValidationError for invalid transition DRAFT → ACCEPTED
+    changeDocumentStatus throws ValidationError for invalid transition ACCEPTED → DRAFT
+
+
+[Survived] StringLiteral
+src/modules/documents/documents.service.ts:163:31
+-       throw new ValidationError('Only DRAFT documents can be deleted')
++       throw new ValidationError("")
+Tests ran:
+    deleteDocument throws ValidationError when document is not DRAFT
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.service.ts:151:33
+-     return prisma.document.update({
+-       where: { id: documentId },
+-       data: { status: newStatus },
+-     })
++     return prisma.document.update({})
+Tests ran:
+    Documents Routes PATCH /documents/:id/status returns 200 with the updated status
+    changeDocumentStatus transitions DRAFT to SENT
+    changeDocumentStatus transitions SENT to ACCEPTED
+  and 2 more tests!
+
+
+[Survived] ObjectLiteral
+src/modules/documents/documents.service.ts:153:11
+-       data: { status: newStatus },
++       data: {},
+Tests ran:
+    Documents Routes PATCH /documents/:id/status returns 200 with the updated status
+    changeDocumentStatus transitions DRAFT to SENT
+    changeDocumentStatus transitions SENT to ACCEPTED
+  and 2 more tests!
+
+
+[NoCoverage] StringLiteral
+src/modules/templates/templates.routes.ts:27:68
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0]?.message ?? "")
+
+[NoCoverage] StringLiteral
+src/modules/templates/templates.routes.ts:46:68
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0]?.message ?? "")
+
+[Survived] LogicalOperator
+src/modules/templates/templates.routes.ts:27:33
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0]?.message && 'Validation failed')
+Tests ran:
+    Templates Routes POST /templates returns 422 when name is missing
+    Templates Routes POST /templates returns 422 when type is invalid
+    Templates Routes POST /templates returns 422 when content is missing
+
+
+[Survived] OptionalChaining
+src/modules/templates/templates.routes.ts:27:33
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0].message ?? 'Validation failed')
+Tests ran:
+    Templates Routes POST /templates returns 422 when name is missing
+    Templates Routes POST /templates returns 422 when type is invalid
+    Templates Routes POST /templates returns 422 when content is missing
+
+
+[Survived] LogicalOperator
+src/modules/templates/templates.routes.ts:46:33
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0]?.message && 'Validation failed')
+Tests ran:
+    Templates Routes PATCH /templates/:id returns 422 when body is empty
+    Templates Routes PATCH /templates/:id returns 422 when type is invalid
+
+
+[Survived] OptionalChaining
+src/modules/templates/templates.routes.ts:46:33
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0].message ?? 'Validation failed')
+Tests ran:
+    Templates Routes PATCH /templates/:id returns 422 when body is empty
+    Templates Routes PATCH /templates/:id returns 422 when type is invalid
+
+
+[NoCoverage] ObjectLiteral
+src/modules/templates/templates.service.ts:55:36
+-         ...(content !== undefined && { content: content as Prisma.InputJsonValue }),
++         ...(content !== undefined && {}),
+
+[Survived] StringLiteral
+src/modules/templates/templates.service.ts:12:42
+-     if (!template) throw new NotFoundError('Template')
++     if (!template) throw new NotFoundError("")
+Tests ran:
+    Templates Routes GET /templates/:id returns 404 when template does not exist
+    Templates Routes PATCH /templates/:id returns 404 when template does not exist
+    Templates Routes DELETE /templates/:id returns 404 when template does not exist
+  and 4 more tests!
+
+
+[Survived] ConditionalExpression
+src/modules/templates/templates.service.ts:55:11
+-         ...(content !== undefined && { content: content as Prisma.InputJsonValue }),
++         ...(true),
+Tests ran:
+    Templates Routes PATCH /templates/:id returns 200 with the updated template
+    updateTemplate updates and returns the template
+
+
+[Survived] ConditionalExpression
+src/modules/templates/templates.service.ts:55:11
+-         ...(content !== undefined && { content: content as Prisma.InputJsonValue }),
++         ...(true && { content: content as Prisma.InputJsonValue }),
+Tests ran:
+    Templates Routes PATCH /templates/:id returns 200 with the updated template
+    updateTemplate updates and returns the template
+
+
+[Survived] ConditionalExpression
+src/modules/templates/templates.service.ts:55:11
+-         ...(content !== undefined && { content: content as Prisma.InputJsonValue }),
++         ...(false),
+Tests ran:
+    Templates Routes PATCH /templates/:id returns 200 with the updated template
+    updateTemplate updates and returns the template
+
+
+[Survived] LogicalOperator
+src/modules/templates/templates.service.ts:55:11
+-         ...(content !== undefined && { content: content as Prisma.InputJsonValue }),
++         ...(content !== undefined || {
++     content: content as Prisma.InputJsonValue
++   }),
+Tests ran:
+    Templates Routes PATCH /templates/:id returns 200 with the updated template
+    updateTemplate updates and returns the template
+
+
+[Survived] EqualityOperator
+src/modules/templates/templates.service.ts:55:11
+-         ...(content !== undefined && { content: content as Prisma.InputJsonValue }),
++         ...(content === undefined && { content: content as Prisma.InputJsonValue }),
+Tests ran:
+    Templates Routes PATCH /templates/:id returns 200 with the updated template
+    updateTemplate updates and returns the template
+
+
+[NoCoverage] StringLiteral
+src/modules/users/users.routes.ts:21:68
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0]?.message ?? "")
+
+[NoCoverage] StringLiteral
+src/modules/users/users.routes.ts:32:68
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0]?.message ?? "")
+
+[Survived] LogicalOperator
+src/modules/users/users.routes.ts:21:33
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0]?.message && 'Validation failed')
+Tests ran:
+    Users Routes PATCH /users/me returns 422 for unknown fields in the payload
+    Users Routes PATCH /users/me returns 422 when name is an empty string
+    Users Routes PATCH /users/me returns 422 when no updatable fields are provided
+
+
+[Survived] OptionalChaining
+src/modules/users/users.routes.ts:21:33
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0].message ?? 'Validation failed')
+Tests ran:
+    Users Routes PATCH /users/me returns 422 for unknown fields in the payload
+    Users Routes PATCH /users/me returns 422 when name is an empty string
+    Users Routes PATCH /users/me returns 422 when no updatable fields are provided
+
+
+[Survived] LogicalOperator
+src/modules/users/users.routes.ts:32:33
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0]?.message && 'Validation failed')
+Tests ran:
+    Users Routes PATCH /users/me/password returns 422 for newPassword shorter than 8 characters
+    Users Routes PATCH /users/me/password returns 422 when currentPassword is missing
+
+
+[Survived] OptionalChaining
+src/modules/users/users.routes.ts:32:33
+-         throw new ValidationError(result.error.issues[0]?.message ?? 'Validation failed')
++         throw new ValidationError(result.error.issues[0].message ?? 'Validation failed')
+Tests ran:
+    Users Routes PATCH /users/me/password returns 422 for newPassword shorter than 8 characters
+    Users Routes PATCH /users/me/password returns 422 when currentPassword is missing
+
+
+[Survived] ObjectLiteral
+src/modules/users/users.service.ts:13:45
+-     const user = await prisma.user.findUnique({ where: { id } })
++     const user = await prisma.user.findUnique({})
+Tests ran:
+    Users Routes GET /users/me returns 200 with the authenticated user profile
+    Users Routes GET /users/me never exposes passwordHash in the response
+    Users Routes GET /users/me returns 404 when authenticated user has been deleted
+  and 3 more tests!
+
+
+[Survived] ObjectLiteral
+src/modules/users/users.service.ts:13:54
+-     const user = await prisma.user.findUnique({ where: { id } })
++     const user = await prisma.user.findUnique({ where: {} })
+Tests ran:
+    Users Routes GET /users/me returns 200 with the authenticated user profile
+    Users Routes GET /users/me never exposes passwordHash in the response
+    Users Routes GET /users/me returns 404 when authenticated user has been deleted
+  and 3 more tests!
+
+
+[Survived] StringLiteral
+src/modules/users/users.service.ts:50:42
+-     if (!user) throw new UnauthorizedError('Invalid credentials')
++     if (!user) throw new UnauthorizedError("")
+Tests ran:
+    changePassword throws UnauthorizedError when user not found
+
+
+[Survived] StringLiteral
+src/modules/users/users.service.ts:14:65
+-     if (!user || user.deletedAt !== null) throw new NotFoundError('User')
++     if (!user || user.deletedAt !== null) throw new NotFoundError("")
+Tests ran:
+    Users Routes GET /users/me returns 404 when authenticated user has been deleted
+    getProfile throws NotFoundError when user does not exist
+    getProfile throws NotFoundError for soft-deleted users
+
+
+[Survived] ObjectLiteral
+src/modules/users/users.service.ts:49:54
+-     const user = await prisma.user.findUnique({ where: { id: userId } })
++     const user = await prisma.user.findUnique({ where: {} })
+Tests ran:
+    Users Routes PATCH /users/me/password returns 200 on successful password change
+    Users Routes PATCH /users/me/password returns 401 when currentPassword is incorrect
+    Users Routes PATCH /users/me/password returns 422 when newPassword is the same as currentPassword
+  and 5 more tests!
+
+
+[Survived] ObjectLiteral
+src/modules/users/users.service.ts:49:45
+-     const user = await prisma.user.findUnique({ where: { id: userId } })
++     const user = await prisma.user.findUnique({})
+Tests ran:
+    Users Routes PATCH /users/me/password returns 200 on successful password change
+    Users Routes PATCH /users/me/password returns 401 when currentPassword is incorrect
+    Users Routes PATCH /users/me/password returns 422 when newPassword is the same as currentPassword
+  and 5 more tests!
+
+
+[Survived] StringLiteral
+src/modules/users/users.service.ts:53:43
+-     if (!valid) throw new UnauthorizedError('Invalid credentials')
++     if (!valid) throw new UnauthorizedError("")
+Tests ran:
+    Users Routes PATCH /users/me/password returns 401 when currentPassword is incorrect
+    changePassword throws UnauthorizedError when currentPassword is wrong
+    changePassword never updates the record if currentPassword verification fails
+
+
+[Survived] StringLiteral
+src/modules/users/users.service.ts:56:31
+-       throw new ValidationError('New password must differ from the current password')
++       throw new ValidationError("")
+Tests ran:
+    Users Routes PATCH /users/me/password returns 422 when newPassword is the same as currentPassword
+    changePassword throws ValidationError when new password equals current password
+
+
+[Survived] ObjectLiteral
+src/modules/users/users.service.ts:61:12
+-       where: { id: userId },
++       where: {},
+Tests ran:
+    Users Routes PATCH /users/me/password returns 200 on successful password change
+    changePassword hashes the new password and updates the record
+
+
+[Survived] StringLiteral
+src/shared/errors/AppError.ts:39:25
+-     constructor(message = 'Forbidden') {
++     constructor(message = "") {
+Tests ran:
+    ForbiddenError returns 403
+
+
+[Survived] StringLiteral
+src/shared/errors/AppError.ts:46:25
+-     constructor(message = 'Conflict') {
++     constructor(message = "") {
+Tests ran:
+    ConflictError returns 409
+
+
+[Survived] StringLiteral
+src/shared/errors/AppError.ts:53:25
+-     constructor(message = 'Validation error') {
++     constructor(message = "") {
+Tests ran:
+    ValidationError returns 422
+
+
+[Survived] StringLiteral
+src/shared/errors/AppError.ts:60:25
+-     constructor(message = 'Unprocessable entity') {
++     constructor(message = "") {
+Tests ran:
+    UnprocessableEntityError returns 422
+
+
+[Survived] StringLiteral
+src/shared/errors/AppError.ts:62:17
+-       this.name = 'UnprocessableEntityError'
++       this.name = ""
+Tests ran:
+    UnprocessableEntityError returns 422
+
+
+[Survived] ObjectLiteral
+src/shared/middlewares/authenticate.ts:25:7
+-         { url: request.url, method: request.method },
++         {},
+Tests ran:
+    Documents Routes GET /documents returns 401 without authentication
+    Documents Routes POST /documents returns 401 without authentication
+    Documents Routes GET /documents/:id returns 401 without authentication
+  and 17 more tests!
+
+
+[Survived] StringLiteral
+src/shared/middlewares/authenticate.ts:26:7
+-         'Access denied — invalid or missing token',
++         "",
+Tests ran:
+    Documents Routes GET /documents returns 401 without authentication
+    Documents Routes POST /documents returns 401 without authentication
+    Documents Routes GET /documents/:id returns 401 without authentication
+  and 17 more tests!
+
+
+Ran 1.87 tests per mutant on average.
+------------------------|------------------|----------|-----------|------------|----------|----------|
+                        | % Mutation score |          |           |            |          |          |
+File                    |  total | covered | # killed | # timeout | # survived | # no cov | # errors |
+------------------------|--------|---------|----------|-----------|------------|----------|----------|
+All files               |  70.50 |   73.17 |      268 |         2 |         99 |       14 |        0 |
+ modules                |  69.80 |   72.70 |      245 |         0 |         92 |       14 |        0 |
+  auth                  |  70.00 |   72.73 |       56 |         0 |         21 |        3 |        0 |
+   auth.routes.ts       |  66.67 |   71.43 |       30 |         0 |         12 |        3 |        0 |
+   auth.schemas.ts      |    n/a |     n/a |        0 |         0 |          0 |        0 |        0 |
+   auth.service.ts      |  74.29 |   74.29 |       26 |         0 |          9 |        0 |        0 |
+  documents             |  65.61 |   68.21 |      103 |         0 |         48 |        6 |        0 |
+   documents.routes.ts  |  60.66 |   66.07 |       37 |         0 |         19 |        5 |        0 |
+   documents.schemas.ts | 100.00 |  100.00 |        4 |         0 |          0 |        0 |        0 |
+   documents.service.ts |  67.39 |   68.13 |       62 |         0 |         29 |        1 |        0 |
+  templates             |  75.00 |   79.59 |       39 |         0 |         10 |        3 |        0 |
+   templates.routes.ts  |  68.42 |   76.47 |       13 |         0 |          4 |        2 |        0 |
+   templates.schemas.ts | 100.00 |  100.00 |        4 |         0 |          0 |        0 |        0 |
+   templates.service.ts |  75.86 |   78.57 |       22 |         0 |          6 |        1 |        0 |
+  users                 |  75.81 |   78.33 |       47 |         0 |         13 |        2 |        0 |
+   users.routes.ts      |  70.00 |   77.78 |       14 |         0 |          4 |        2 |        0 |
+   users.schemas.ts     | 100.00 |  100.00 |        4 |         0 |          0 |        0 |        0 |
+   users.service.ts     |  76.32 |   76.32 |       29 |         0 |          9 |        0 |        0 |
+ shared                 |  78.13 |   78.13 |       23 |         2 |          7 |        0 |        0 |
+  errors                |  77.27 |   77.27 |       15 |         2 |          5 |        0 |        0 |
+   AppError.ts          |  77.27 |   77.27 |       15 |         2 |          5 |        0 |        0 |
+  middlewares           |  60.00 |   60.00 |        3 |         0 |          2 |        0 |        0 |
+   authenticate.ts      |  60.00 |   60.00 |        3 |         0 |          2 |        0 |        0 |
+  utils                 | 100.00 |  100.00 |        5 |         0 |          0 |        0 |        0 |
+   hash.ts              | 100.00 |  100.00 |        5 |         0 |          0 |        0 |        0 |
+------------------------|--------|---------|----------|-----------|------------|----------|----------|
+[32m22:33:17 (20288) INFO MutationTestReportHelper[39m Final mutation score of 70.50 is greater than or equal to break threshold 60
+[32m22:33:17 (20288) INFO HtmlReporter[39m Your report can be found at: file:///C:/projetos/FreelancerDoc/apps/api/reports/mutation/mutation.html
+[32m22:33:17 (20288) INFO MutationTestExecutor[39m Done in 1 minute 52 seconds.

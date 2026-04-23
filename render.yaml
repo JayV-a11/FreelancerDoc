@@ -1,0 +1,53 @@
+services:
+  - type: web
+    name: freelancedoc-api
+    runtime: node
+    region: oregon
+    plan: starter
+
+    buildCommand: cd apps/api && npm install && npm run build
+    startCommand: cd apps/api && npm run start
+
+    # Disable auto-deploy — use manual or CI/CD triggered deploys
+    autoDeploy: false
+
+    healthCheckPath: /health
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: DATABASE_URL
+        sync: false # Set in Render dashboard — Supabase transaction pooler (port 6543)
+      - key: DIRECT_URL
+        sync: false # Set in Render dashboard — Supabase direct (port 5432)
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false # WARNING: Never expose this key to the client
+      - key: JWT_SECRET
+        generateValue: false # Set a strong secret manually (openssl rand -base64 32)
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        generateValue: false # Must be different from JWT_SECRET
+        sync: false
+      - key: JWT_ACCESS_EXPIRY
+        value: "15m"
+      - key: JWT_REFRESH_EXPIRY
+        value: "7d"
+      - key: COOKIE_SECRET
+        generateValue: false # Must be different from both JWT secrets (openssl rand -base64 32)
+        sync: false
+      - key: ALLOWED_ORIGIN
+        sync: false # Exact Vercel URL, no trailing slash
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        sync: false

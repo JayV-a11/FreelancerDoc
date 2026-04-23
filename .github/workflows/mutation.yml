@@ -1,0 +1,117 @@
+name: Mutation Tests
+
+# Mutation testing is expensive (~5–10 min). Run only:
+#   - manually via workflow_dispatch
+#   - automatically on push to main (not PRs — too slow for PR feedback loops)
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      workspace:
+        description: Which workspace to run mutation tests for
+        required: true
+        default: both
+        type: choice
+        options:
+          - api
+          - web
+          - both
+
+concurrency:
+  group: mutation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── API Mutation Tests ───────────────────────────────────────────────────
+  mutate-api:
+    name: API — Stryker Mutation Tests
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' &&
+       (github.event.inputs.workspace == 'api' || github.event.inputs.workspace == 'both'))
+
+    defaults:
+      run:
+        working-directory: apps/api
+
+    env:
+      NODE_ENV: test
+      PORT: "3001"
+      DATABASE_URL: postgresql://postgres:password@localhost:5432/freelancedoc_test
+      DIRECT_URL: postgresql://postgres:password@localhost:5432/freelancedoc_test
+      SUPABASE_URL: https://test.supabase.co
+      SUPABASE_SERVICE_KEY: eyJhbGciOiJIUzI1NiJ9.test_service_key_placeholder_for_unit_tests
+      JWT_SECRET: test_jwt_access_secret_min_32_chars_AAAAAA
+      JWT_REFRESH_SECRET: test_jwt_refresh_secret_min_32_chars_BBBBBB
+      COOKIE_SECRET: test_cookie_signing_secret_min_32_chars_CCCCCC
+      JWT_ACCESS_EXPIRY: "15m"
+      JWT_REFRESH_EXPIRY: "7d"
+      ALLOWED_ORIGIN: http://localhost:3000
+      SMTP_HOST: localhost
+      SMTP_PORT: "1025"
+      SMTP_USER: test@test.com
+      SMTP_PASS: testpassword
+      SMTP_FROM: noreply@test.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: .
+
+      - name: Run Stryker (break threshold ≥ 60%)
+        run: npm run test:mutation
+
+      - name: Upload Stryker report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-stryker-report
+          path: apps/api/reports/mutation/
+          retention-days: 14
+
+  # ── Web Mutation Tests ───────────────────────────────────────────────────
+  mutate-web:
+    name: Web — Stryker Mutation Tests
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' &&
+       (github.event.inputs.workspace == 'web' || github.event.inputs.workspace == 'both'))
+
+    defaults:
+      run:
+        working-directory: apps/web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: .
+
+      - name: Run Stryker (break threshold ≥ 60%)
+        run: npm run test:mutation
+
+      - name: Upload Stryker report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: web-stryker-report
+          path: apps/web/reports/mutation/
+          retention-days: 14

@@ -1,0 +1,243 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "optional": "optional",
+    "tryAgain": "Try again",
+    "goHome": "Go home",
+    "deleting": "Deleting…",
+    "saving": "Saving…",
+    "creating": "Creating…",
+    "sending": "Sending…"
+  },
+  "locale": {
+    "label": "Language",
+    "pt-br": "Português",
+    "en": "English",
+    "es": "Español"
+  },
+  "nav": {
+    "templates": "Templates",
+    "documents": "Documents",
+    "profile": "Profile",
+    "signOut": "Sign out"
+  },
+  "login": {
+    "title": "Sign in",
+    "description": "Enter your credentials to access FreelanceDoc.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "noAccount": "Don't have an account?",
+    "createOne": "Create one",
+    "invalidCredentials": "Invalid email or password. Please try again.",
+    "validation": {
+      "emailInvalid": "Enter a valid email",
+      "passwordRequired": "Password is required"
+    }
+  },
+  "register": {
+    "title": "Create account",
+    "description": "Sign up to start using FreelanceDoc.",
+    "fullName": "Full name",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Create account",
+    "submitting": "Creating account…",
+    "alreadyHaveAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "defaultError": "Registration failed. Please try again.",
+    "validation": {
+      "nameRequired": "Name is required",
+      "emailInvalid": "Enter a valid email",
+      "passwordMin": "Password must be at least 8 characters"
+    }
+  },
+  "templates": {
+    "title": "Templates",
+    "description": "Reusable proposal and contract structures.",
+    "newTemplate": "New template",
+    "noTemplates": "No templates yet.",
+    "createFirst": "Create your first template",
+    "failedLoad": "Failed to load templates.",
+    "failedDelete": "Failed to delete template.",
+    "created": "Created",
+    "deleteDialog": {
+      "title": "Delete template",
+      "description": "This action cannot be undone. The template will be permanently deleted.",
+      "confirm": "Delete",
+      "confirming": "Deleting…"
+    }
+  },
+  "templatesNew": {
+    "title": "New template",
+    "description": "Create a reusable structure for your proposals or contracts.",
+    "cardTitle": "Template details",
+    "cardDescription": "Content uses JSON blocks:",
+    "name": "Name",
+    "namePlaceholder": "e.g. Web Development Proposal",
+    "type": "Type",
+    "selectType": "Select type",
+    "proposal": "Proposal",
+    "contract": "Contract",
+    "content": "Content (JSON)",
+    "submit": "Create template",
+    "submitting": "Saving…",
+    "failedCreate": "Failed to create template. Please try again.",
+    "validation": {
+      "nameRequired": "Name is required",
+      "contentRequired": "Content is required",
+      "contentInvalidJson": "Content must be valid JSON"
+    }
+  },
+  "templatesEdit": {
+    "title": "Edit template",
+    "description": "Update your template content.",
+    "cardTitle": "Template details",
+    "cardDescription": "Content uses JSON blocks:",
+    "name": "Name",
+    "type": "Type",
+    "selectType": "Select type",
+    "proposal": "Proposal",
+    "contract": "Contract",
+    "content": "Content (JSON)",
+    "saveChanges": "Save changes",
+    "saving": "Saving…",
+    "failedUpdate": "Failed to update template. Please try again.",
+    "notFound": "Template not found.",
+    "validation": {
+      "nameRequired": "Name is required",
+      "contentRequired": "Content is required",
+      "contentInvalidJson": "Content must be valid JSON"
+    }
+  },
+  "documents": {
+    "title": "Documents",
+    "description": "Manage your proposals and contracts.",
+    "newDocument": "New document",
+    "noDocuments": "No documents found.",
+    "createFirst": "Create your first document",
+    "failedLoad": "Failed to load documents.",
+    "failedDelete": "Failed to delete document.",
+    "filterByStatus": "Filter by status:",
+    "all": "All",
+    "statuses": {
+      "DRAFT": "Draft",
+      "SENT": "Sent",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Rejected",
+      "EXPIRED": "Expired"
+    },
+    "deleteDialog": {
+      "title": "Delete document",
+      "description": "This action cannot be undone. The document will be permanently deleted.",
+      "confirm": "Delete",
+      "confirming": "Deleting…"
+    }
+  },
+  "documentDetail": {
+    "downloadPdf": "Download PDF",
+    "sendByEmail": "Send by email",
+    "changeStatus": "Change status",
+    "markAs": "Mark as {status}",
+    "failedLoad": "Document not found.",
+    "failedStatus": "Failed to update status.",
+    "failedSend": "Failed to send document.",
+    "failedDownload": "Failed to download PDF.",
+    "clientSection": "Client",
+    "clientName": "Name",
+    "clientEmail": "Email",
+    "clientDocument": "Document",
+    "value": "Value",
+    "validUntil": "Valid until",
+    "contentSection": "Content",
+    "versionsSection": "Versions",
+    "revisions": "{count} revision(s)",
+    "sendDialog": {
+      "title": "Send document by email",
+      "description": "Leave blank to send to",
+      "override": "Override recipient (optional)",
+      "send": "Send",
+      "sending": "Sending…"
+    }
+  },
+  "documentsNew": {
+    "title": "New document",
+    "description": "Create a new proposal or contract.",
+    "clientSection": "Client information",
+    "documentTitle": "Document title",
+    "titlePlaceholder": "e.g. Website Proposal",
+    "clientName": "Client name",
+    "clientEmail": "Client email",
+    "clientDocument": "Client document",
+    "totalValue": "Total value",
+    "currency": "Currency",
+    "validUntil": "Valid until",
+    "contentSection": "Content blocks",
+    "heading": "Heading",
+    "paragraph": "Paragraph",
+    "headingPlaceholder": "Heading text…",
+    "paragraphPlaceholder": "Paragraph text…",
+    "submit": "Create document",
+    "submitting": "Creating…",
+    "failedCreate": "Failed to create document. Please try again.",
+    "validation": {
+      "titleRequired": "Title is required",
+      "clientNameRequired": "Client name is required",
+      "clientEmailInvalid": "Enter a valid email",
+      "totalValuePositive": "Must be a positive number",
+      "currencyLength": "Must be 3 characters"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "description": "Manage your account information.",
+    "personal": {
+      "title": "Personal information",
+      "description": "Your name appears on documents sent to clients.",
+      "fullName": "Full name",
+      "professionalName": "Professional name",
+      "document": "CPF / CNPJ",
+      "phone": "Phone",
+      "address": "Address",
+      "submit": "Save profile",
+      "submitting": "Saving…",
+      "successMessage": "Profile updated successfully.",
+      "failedUpdate": "Failed to update profile.",
+      "validation": {
+        "nameRequired": "Name is required"
+      }
+    },
+    "password": {
+      "title": "Change password",
+      "description": "Use a strong password with at least 8 characters.",
+      "current": "Current password",
+      "new": "New password",
+      "confirm": "Confirm new password",
+      "submit": "Change password",
+      "submitting": "Changing…",
+      "successMessage": "Password changed successfully.",
+      "defaultError": "Failed to change password.",
+      "validation": {
+        "currentRequired": "Current password is required",
+        "newMin": "New password must be at least 8 characters",
+        "confirmRequired": "Please confirm your new password",
+        "passwordsMismatch": "Passwords do not match"
+      }
+    }
+  },
+  "errors": {
+    "globalTitle": "Something went wrong",
+    "globalDescription": "An unexpected error occurred. Please try again or return to the home page.",
+    "errorId": "Error ID:",
+    "dashboardTitle": "Something went wrong",
+    "goToTemplates": "Go to Templates"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or has been moved."
+  }
+}
