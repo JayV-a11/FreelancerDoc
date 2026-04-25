@@ -52,12 +52,14 @@ freelancedoc/
 │           │   └── (dashboard)/ # Protected dashboard pages
 │           ├── components/
 │           │   ├── ui/          # shadcn/ui components
-│           │   └── [feature]/   # Feature-specific components
+│           │   ├── layout/      # Layout components
+│           │   └── providers/   # Context providers
 │           ├── services/        # API call wrappers
-│           ├── hooks/           # React hooks
-│           ├── schemas/         # Zod schemas shared with forms
+│           ├── stores/          # Zustand stores
+│           ├── i18n/            # Internationalisation (next-intl)
 │           ├── types/           # TypeScript types
-│           └── lib/             # axios instance, utils, env validation
+│           ├── lib/             # axios instance, utils, env validation
+│           └── middleware.ts    # Next.js middleware (auth guard)
 │
 ├── supabase/
 │   ├── migrations/              # Versioned SQL migrations (table + RLS together)
