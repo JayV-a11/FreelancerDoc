@@ -64,6 +64,7 @@
     "createFirst": "Crea tu primera plantilla",
     "failedLoad": "Error al cargar plantillas.",
     "failedDelete": "Error al eliminar la plantilla.",
+    "deleteSuccess": "Plantilla eliminada correctamente.",
     "created": "Creado",
     "deleteDialog": {
       "title": "Eliminar plantilla",
@@ -87,6 +88,7 @@
     "submit": "Crear plantilla",
     "submitting": "Guardando…",
     "failedCreate": "Error al crear la plantilla. Inténtalo de nuevo.",
+    "createSuccess": "Plantilla creada correctamente.",
     "validation": {
       "nameRequired": "El nombre es obligatorio",
       "contentRequired": "El contenido es obligatorio",
@@ -107,6 +109,7 @@
     "saveChanges": "Guardar cambios",
     "saving": "Guardando…",
     "failedUpdate": "Error al actualizar la plantilla. Inténtalo de nuevo.",
+    "updateSuccess": "Plantilla actualizada correctamente.",
     "notFound": "Plantilla no encontrada.",
     "validation": {
       "nameRequired": "El nombre es obligatorio",
@@ -122,6 +125,7 @@
     "createFirst": "Crea tu primer documento",
     "failedLoad": "Error al cargar documentos.",
     "failedDelete": "Error al eliminar el documento.",
+    "deleteSuccess": "Documento eliminado correctamente.",
     "filterByStatus": "Filtrar por estado:",
     "all": "Todos",
     "statuses": {
@@ -145,6 +149,7 @@
     "markAs": "Marcar como {status}",
     "failedLoad": "Documento no encontrado.",
     "failedStatus": "Error al actualizar el estado.",
+    "statusChanged": "Estado actualizado correctamente.",
     "failedSend": "Error al enviar el documento.",
     "failedDownload": "Error al descargar el PDF.",
     "clientSection": "Cliente",
@@ -187,6 +192,7 @@
     "submit": "Crear documento",
     "submitting": "Creando…",
     "failedCreate": "Error al crear el documento. Inténtalo de nuevo.",
+    "createSuccess": "Documento creado correctamente.",
     "validation": {
       "titleRequired": "El título es obligatorio",
       "clientNameRequired": "El nombre del cliente es obligatorio",
@@ -224,6 +230,7 @@
       "submitting": "Cambiando…",
       "successMessage": "Contraseña cambiada correctamente.",
       "defaultError": "Error al cambiar la contraseña.",
+      "failedChange": "Error al cambiar la contraseña.",
       "validation": {
         "currentRequired": "La contraseña actual es obligatoria",
         "newMin": "La nueva contraseña debe tener al menos 8 caracteres",

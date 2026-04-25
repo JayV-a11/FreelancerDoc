@@ -1,11 +1,12 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import { createTemplate } from '@/services/templates.service'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -25,7 +26,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 
 const DEFAULT_CONTENT = JSON.stringify(
   {
@@ -42,7 +42,6 @@ type FormData = { name: string; type: 'PROPOSAL' | 'CONTRACT'; content: string }
 
 export default function NewTemplatePage() {
   const router = useRouter()
-  const [serverError, setServerError] = useState<string | null>(null)
   const t = useTranslations('templatesNew')
   const tCommon = useTranslations('common')
 
@@ -80,16 +79,16 @@ export default function NewTemplatePage() {
   })
 
   const onSubmit = async (data: FormData) => {
-    setServerError(null)
     try {
       await createTemplate({
         name: data.name,
         type: data.type,
         content: JSON.parse(data.content) as Record<string, unknown>,
       })
+      toast.success(t('createSuccess'))
       router.push('/templates')
     } catch {
-      setServerError(t('failedCreate'))
+      toast.error(t('failedCreate'))
     }
   }
 
@@ -112,11 +111,6 @@ export default function NewTemplatePage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-            {serverError && (
-              <Alert variant="destructive">
-                <AlertDescription>{serverError}</AlertDescription>
-              </Alert>
-            )}
 
             <div className="space-y-1">
               <Label htmlFor="name">{t('name')}</Label>

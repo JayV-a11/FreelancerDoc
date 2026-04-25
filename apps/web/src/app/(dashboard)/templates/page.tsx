@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Plus, Pencil, Trash2, FileText } from 'lucide-react'
+import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 import { listTemplates, deleteTemplate } from '@/services/templates.service'
 import type { Template } from '@/types'
@@ -25,7 +26,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function TemplatesPage() {
   const router = useRouter()
@@ -33,16 +33,14 @@ export default function TemplatesPage() {
   const tCommon = useTranslations('common')
   const [templates, setTemplates] = useState<Template[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
 
   const load = () => {
     setLoading(true)
-    setError(null)
     listTemplates()
       .then(setTemplates)
-      .catch(() => setError(t('failedLoad')))
+      .catch(() => toast.error(t('failedLoad')))
       .finally(() => setLoading(false))
   }
 
@@ -54,8 +52,9 @@ export default function TemplatesPage() {
     try {
       await deleteTemplate(deleteId)
       setTemplates((prev) => prev.filter((tmpl) => tmpl.id !== deleteId))
+      toast.success(t('deleteSuccess'))
     } catch {
-      setError(t('failedDelete'))
+      toast.error(t('failedDelete'))
     } finally {
       setDeleting(false)
       setDeleteId(null)
@@ -76,12 +75,6 @@ export default function TemplatesPage() {
           </Link>
         </Button>
       </div>
-
-      {error && (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
 
       {loading ? (
         <div className="space-y-3">

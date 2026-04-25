@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Plus, FileText, Trash2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import { listDocuments, deleteDocument } from '@/services/documents.service'
 import type { Document, DocumentStatus } from '@/types'
 import { Button } from '@/components/ui/button'
@@ -32,7 +33,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 
 const STATUS_VARIANT: Record<
   DocumentStatus,
@@ -60,16 +60,14 @@ export default function DocumentsPage() {
   const [documents, setDocuments] = useState<Document[]>([])
   const [filter, setFilter] = useState<DocumentStatus | 'ALL'>('ALL')
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
 
   const load = (status?: DocumentStatus) => {
     setLoading(true)
-    setError(null)
     listDocuments(status)
       .then(setDocuments)
-      .catch(() => setError(t('failedLoad')))
+      .catch(() => toast.error(t('failedLoad')))
       .finally(() => setLoading(false))
   }
 
@@ -83,8 +81,9 @@ export default function DocumentsPage() {
     try {
       await deleteDocument(deleteId)
       setDocuments((prev) => prev.filter((d) => d.id !== deleteId))
+      toast.success(t('deleteSuccess'))
     } catch {
-      setError(t('failedDelete'))
+      toast.error(t('failedDelete'))
     } finally {
       setDeleting(false)
       setDeleteId(null)
@@ -125,12 +124,6 @@ export default function DocumentsPage() {
           </SelectContent>
         </Select>
       </div>
-
-      {error && (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
 
       {loading ? (
         <div className="space-y-3">
@@ -208,4 +201,4 @@ export default function DocumentsPage() {
       </Dialog>
     </div>
   )
-}
+}

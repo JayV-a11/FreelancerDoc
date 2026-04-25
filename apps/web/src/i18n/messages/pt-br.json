@@ -64,6 +64,7 @@
     "createFirst": "Crie seu primeiro modelo",
     "failedLoad": "Falha ao carregar modelos.",
     "failedDelete": "Falha ao excluir modelo.",
+    "deleteSuccess": "Modelo excluído com sucesso.",
     "created": "Criado",
     "deleteDialog": {
       "title": "Excluir modelo",
@@ -87,6 +88,7 @@
     "submit": "Criar modelo",
     "submitting": "Salvando…",
     "failedCreate": "Falha ao criar modelo. Tente novamente.",
+    "createSuccess": "Modelo criado com sucesso.",
     "validation": {
       "nameRequired": "O nome é obrigatório",
       "contentRequired": "O conteúdo é obrigatório",
@@ -107,6 +109,7 @@
     "saveChanges": "Salvar alterações",
     "saving": "Salvando…",
     "failedUpdate": "Falha ao atualizar modelo. Tente novamente.",
+    "updateSuccess": "Modelo atualizado com sucesso.",
     "notFound": "Modelo não encontrado.",
     "validation": {
       "nameRequired": "O nome é obrigatório",
@@ -122,6 +125,7 @@
     "createFirst": "Crie seu primeiro documento",
     "failedLoad": "Falha ao carregar documentos.",
     "failedDelete": "Falha ao excluir documento.",
+    "deleteSuccess": "Documento excluído com sucesso.",
     "filterByStatus": "Filtrar por status:",
     "all": "Todos",
     "statuses": {
@@ -145,6 +149,7 @@
     "markAs": "Marcar como {status}",
     "failedLoad": "Documento não encontrado.",
     "failedStatus": "Falha ao atualizar status.",
+    "statusChanged": "Status atualizado com sucesso.",
     "failedSend": "Falha ao enviar documento.",
     "failedDownload": "Falha ao baixar PDF.",
     "clientSection": "Cliente",
@@ -187,6 +192,7 @@
     "submit": "Criar documento",
     "submitting": "Criando…",
     "failedCreate": "Falha ao criar documento. Tente novamente.",
+    "createSuccess": "Documento criado com sucesso.",
     "validation": {
       "titleRequired": "O título é obrigatório",
       "clientNameRequired": "O nome do cliente é obrigatório",
@@ -223,7 +229,7 @@
       "submit": "Alterar senha",
       "submitting": "Alterando…",
       "successMessage": "Senha alterada com sucesso.",
-      "defaultError": "Falha ao alterar a senha.",
+      "failedChange": "Falha ao alterar a senha.",
       "validation": {
         "currentRequired": "A senha atual é obrigatória",
         "newMin": "A nova senha deve ter pelo menos 8 caracteres",

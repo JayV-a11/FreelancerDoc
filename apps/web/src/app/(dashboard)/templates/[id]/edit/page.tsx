@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter, useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import { getTemplate, updateTemplate } from '@/services/templates.service'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -35,7 +36,6 @@ export default function EditTemplatePage() {
   const { id } = useParams<{ id: string }>()
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
-  const [serverError, setServerError] = useState<string | null>(null)
   const t = useTranslations('templatesEdit')
   const tCommon = useTranslations('common')
 
@@ -84,16 +84,16 @@ export default function EditTemplatePage() {
   }, [id, reset, t])
 
   const onSubmit = async (data: FormData) => {
-    setServerError(null)
     try {
       await updateTemplate(id, {
         name: data.name,
         type: data.type,
         content: JSON.parse(data.content) as Record<string, unknown>,
       })
+      toast.success(t('updateSuccess'))
       router.push('/templates')
     } catch {
-      setServerError(t('failedUpdate'))
+      toast.error(t('failedUpdate'))
     }
   }
 
@@ -133,11 +133,6 @@ export default function EditTemplatePage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-            {serverError && (
-              <Alert variant="destructive">
-                <AlertDescription>{serverError}</AlertDescription>
-              </Alert>
-            )}
 
             <div className="space-y-1">
               <Label htmlFor="name">{t('name')}</Label>

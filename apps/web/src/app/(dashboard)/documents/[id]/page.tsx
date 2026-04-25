@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Download, Send, ArrowLeft } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import {
   getDocument,
   changeDocumentStatus,
@@ -38,7 +39,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 
 const STATUS_VARIANT: Record<
   DocumentStatus,
@@ -65,11 +65,9 @@ export default function DocumentDetailPage() {
   const [doc, setDoc] = useState<Document | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [actionError, setActionError] = useState<string | null>(null)
   const [sendDialogOpen, setSendDialogOpen] = useState(false)
   const [recipientEmail, setRecipientEmail] = useState('')
   const [sending, setSending] = useState(false)
-  const [sendSuccess, setSendSuccess] = useState<string | null>(null)
 
   const load = () => {
     setLoading(true)
@@ -83,25 +81,24 @@ export default function DocumentDetailPage() {
 
   const handleStatusChange = async (status: DocumentStatus) => {
     if (!doc) return
-    setActionError(null)
     try {
       const updated = await changeDocumentStatus(doc.id, status)
       setDoc(updated)
+      toast.success(t('statusChanged'))
     } catch {
-      setActionError(t('failedStatus'))
+      toast.error(t('failedStatus'))
     }
   }
 
   const handleSend = async () => {
     if (!doc) return
     setSending(true)
-    setActionError(null)
     try {
       const result = await sendDocument(doc.id, recipientEmail || undefined)
-      setSendSuccess(result.message)
+      toast.success(result.message)
       setSendDialogOpen(false)
     } catch {
-      setActionError(t('failedSend'))
+      toast.error(t('failedSend'))
     } finally {
       setSending(false)
     }
@@ -110,7 +107,7 @@ export default function DocumentDetailPage() {
   const handleDownload = async () => {
     if (!doc) return
     await downloadDocumentPdf(doc.id, doc.title).catch(() =>
-      setActionError(t('failedDownload')),
+      toast.error(t('failedDownload')),
     )
   }
 
@@ -149,18 +146,6 @@ export default function DocumentDetailPage() {
           {tDoc(`statuses.${doc.status}`)}
         </Badge>
       </div>
-
-      {actionError && (
-        <Alert variant="destructive">
-          <AlertDescription>{actionError}</AlertDescription>
-        </Alert>
-      )}
-
-      {sendSuccess && (
-        <Alert>
-          <AlertDescription>{sendSuccess}</AlertDescription>
-        </Alert>
-      )}
 
       <div className="flex flex-wrap gap-2">
         <Button variant="outline" size="sm" onClick={handleDownload}>

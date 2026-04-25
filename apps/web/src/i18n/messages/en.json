@@ -64,6 +64,7 @@
     "createFirst": "Create your first template",
     "failedLoad": "Failed to load templates.",
     "failedDelete": "Failed to delete template.",
+    "deleteSuccess": "Template deleted successfully.",
     "created": "Created",
     "deleteDialog": {
       "title": "Delete template",
@@ -87,6 +88,7 @@
     "submit": "Create template",
     "submitting": "Saving…",
     "failedCreate": "Failed to create template. Please try again.",
+    "createSuccess": "Template created successfully.",
     "validation": {
       "nameRequired": "Name is required",
       "contentRequired": "Content is required",
@@ -107,6 +109,7 @@
     "saveChanges": "Save changes",
     "saving": "Saving…",
     "failedUpdate": "Failed to update template. Please try again.",
+    "updateSuccess": "Template updated successfully.",
     "notFound": "Template not found.",
     "validation": {
       "nameRequired": "Name is required",
@@ -122,6 +125,7 @@
     "createFirst": "Create your first document",
     "failedLoad": "Failed to load documents.",
     "failedDelete": "Failed to delete document.",
+    "deleteSuccess": "Document deleted successfully.",
     "filterByStatus": "Filter by status:",
     "all": "All",
     "statuses": {
@@ -145,6 +149,7 @@
     "markAs": "Mark as {status}",
     "failedLoad": "Document not found.",
     "failedStatus": "Failed to update status.",
+    "statusChanged": "Status updated successfully.",
     "failedSend": "Failed to send document.",
     "failedDownload": "Failed to download PDF.",
     "clientSection": "Client",
@@ -187,6 +192,7 @@
     "submit": "Create document",
     "submitting": "Creating…",
     "failedCreate": "Failed to create document. Please try again.",
+    "createSuccess": "Document created successfully.",
     "validation": {
       "titleRequired": "Title is required",
       "clientNameRequired": "Client name is required",
@@ -224,6 +230,7 @@
       "submitting": "Changing…",
       "successMessage": "Password changed successfully.",
       "defaultError": "Failed to change password.",
+      "failedChange": "Failed to change password.",
       "validation": {
         "currentRequired": "Current password is required",
         "newMin": "New password must be at least 8 characters",

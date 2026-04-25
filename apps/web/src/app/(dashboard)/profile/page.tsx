@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/auth.store'
 import { updateProfile, changePassword } from '@/services/users.service'
 import { Button } from '@/components/ui/button'
@@ -17,7 +18,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
 
 type ProfileData = {
@@ -38,10 +38,6 @@ export default function ProfilePage() {
   const { user, setUser } = useAuthStore()
   const t = useTranslations('profile')
   const tCommon = useTranslations('common')
-  const [profileSuccess, setProfileSuccess] = useState(false)
-  const [profileError, setProfileError] = useState<string | null>(null)
-  const [passwordSuccess, setPasswordSuccess] = useState(false)
-  const [passwordError, setPasswordError] = useState<string | null>(null)
 
   const profileSchema = useMemo(
     () =>
@@ -97,8 +93,6 @@ export default function ProfilePage() {
   }, [user, resetProfile])
 
   const onProfileSubmit = async (data: ProfileData) => {
-    setProfileError(null)
-    setProfileSuccess(false)
     try {
       const updated = await updateProfile({
         name: data.name,
@@ -108,27 +102,25 @@ export default function ProfilePage() {
         address: data.address || undefined,
       })
       setUser(updated)
-      setProfileSuccess(true)
+      toast.success(t('personal.successMessage'))
     } catch {
-      setProfileError(t('personal.failedUpdate'))
+      toast.error(t('personal.failedUpdate'))
     }
   }
 
   const onPasswordSubmit = async (data: PasswordData) => {
-    setPasswordError(null)
-    setPasswordSuccess(false)
     try {
       await changePassword({
         currentPassword: data.currentPassword,
         newPassword: data.newPassword,
       })
-      setPasswordSuccess(true)
+      toast.success(t('password.successMessage'))
       resetPassword()
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { error?: string } } })?.response?.data?.error ??
         t('password.failedChange')
-      setPasswordError(message)
+      toast.error(message)
     }
   }
 
@@ -151,16 +143,6 @@ export default function ProfilePage() {
             className="space-y-4"
             noValidate
           >
-            {profileError && (
-              <Alert variant="destructive">
-                <AlertDescription>{profileError}</AlertDescription>
-              </Alert>
-            )}
-            {profileSuccess && (
-              <Alert>
-                <AlertDescription>{t('personal.success')}</AlertDescription>
-              </Alert>
-            )}
 
             <div className="space-y-1">
               <Label htmlFor="name">{t('personal.name')}</Label>
@@ -224,16 +206,6 @@ export default function ProfilePage() {
             className="space-y-4"
             noValidate
           >
-            {passwordError && (
-              <Alert variant="destructive">
-                <AlertDescription>{passwordError}</AlertDescription>
-              </Alert>
-            )}
-            {passwordSuccess && (
-              <Alert>
-                <AlertDescription>{t('password.success')}</AlertDescription>
-              </Alert>
-            )}
 
             <div className="space-y-1">
               <Label htmlFor="currentPassword">{t('password.current')}</Label>

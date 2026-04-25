@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { Plus, Trash2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import { createDocument } from '@/services/documents.service'
 import { listTemplates } from '@/services/templates.service'
 import type { ContentBlock, Template } from '@/types'
@@ -28,7 +29,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 
 type FormData = {
@@ -43,7 +43,6 @@ type FormData = {
 
 export default function NewDocumentPage() {
   const router = useRouter()
-  const [serverError, setServerError] = useState<string | null>(null)
   const [blocks, setBlocks] = useState<ContentBlock[]>([
     { type: 'heading', value: '' },
     { type: 'text', value: '' },
@@ -104,7 +103,6 @@ export default function NewDocumentPage() {
   }
 
   const onSubmit = async (data: FormData) => {
-    setServerError(null)
     try {
       await createDocument({
         ...data,
@@ -113,9 +111,10 @@ export default function NewDocumentPage() {
         validUntil: data.validUntil ? new Date(data.validUntil).toISOString() : null,
         content: { blocks },
       })
+      toast.success(t('createSuccess'))
       router.push('/documents')
     } catch {
-      setServerError(t('failedCreate'))
+      toast.error(t('failedCreate'))
     }
   }
 
@@ -127,11 +126,6 @@ export default function NewDocumentPage() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
-        {serverError && (
-          <Alert variant="destructive">
-            <AlertDescription>{serverError}</AlertDescription>
-          </Alert>
-        )}
 
         <Card className="max-w-2xl">
           <CardHeader>
