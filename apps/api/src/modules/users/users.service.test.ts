@@ -57,10 +57,24 @@ describe('getProfile', () => {
     expect(result.email).toBe(BASE_USER.email)
   })
 
+  it('looks up user with correct where clause', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(BASE_USER)
+
+    await getProfile(BASE_USER.id)
+
+    expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { id: BASE_USER.id } })
+  })
+
   it('throws NotFoundError when user does not exist', async () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(null)
 
     await expect(getProfile('non-existent-id')).rejects.toThrow(NotFoundError)
+  })
+
+  it('error message identifies the User resource', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(null)
+
+    await expect(getProfile('non-existent-id')).rejects.toThrow('User not found')
   })
 
   it('throws NotFoundError for soft-deleted users', async () => {
@@ -135,6 +149,46 @@ describe('changePassword', () => {
     expect(updateCall?.data.passwordHash).not.toBe('NewP@ss2')
   })
 
+  it('looks up user with correct where clause before verifying password', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(BASE_USER)
+    vi.mocked(verifyPassword).mockResolvedValue(true)
+    vi.mocked(prisma.user.update).mockResolvedValue(BASE_USER)
+
+    await changePassword(BASE_USER.id, {
+      currentPassword: 'OldP@ss1',
+      newPassword: 'NewP@ss2',
+    })
+
+    expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { id: BASE_USER.id } })
+  })
+
+  it('updates the record with the correct user id in where clause', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(BASE_USER)
+    vi.mocked(verifyPassword).mockResolvedValue(true)
+    vi.mocked(prisma.user.update).mockResolvedValue(BASE_USER)
+
+    await changePassword(BASE_USER.id, {
+      currentPassword: 'OldP@ss1',
+      newPassword: 'NewP@ss2',
+    })
+
+    const updateCall = vi.mocked(prisma.user.update).mock.calls[0]?.[0]
+    expect(updateCall?.where.id).toBe(BASE_USER.id)
+  })
+
+  it('verifies the current password against the stored hash', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(BASE_USER)
+    vi.mocked(verifyPassword).mockResolvedValue(true)
+    vi.mocked(prisma.user.update).mockResolvedValue(BASE_USER)
+
+    await changePassword(BASE_USER.id, {
+      currentPassword: 'OldP@ss1',
+      newPassword: 'NewP@ss2',
+    })
+
+    expect(verifyPassword).toHaveBeenCalledWith(BASE_USER.passwordHash, 'OldP@ss1')
+  })
+
   it('throws UnauthorizedError when currentPassword is wrong', async () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(BASE_USER)
     vi.mocked(verifyPassword).mockResolvedValue(false)
@@ -145,6 +199,15 @@ describe('changePassword', () => {
         newPassword: 'NewP@ss2',
       }),
     ).rejects.toThrow(UnauthorizedError)
+  })
+
+  it('error message for wrong password is "Invalid credentials"', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(BASE_USER)
+    vi.mocked(verifyPassword).mockResolvedValue(false)
+
+    await expect(
+      changePassword(BASE_USER.id, { currentPassword: 'WrongOld', newPassword: 'NewP@ss2' }),
+    ).rejects.toThrow('Invalid credentials')
   })
 
   it('throws UnauthorizedError when user not found', async () => {
@@ -158,6 +221,14 @@ describe('changePassword', () => {
     ).rejects.toThrow(UnauthorizedError)
   })
 
+  it('error message for missing user is "Invalid credentials"', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(null)
+
+    await expect(
+      changePassword('unknown-id', { currentPassword: 'OldP@ss1', newPassword: 'NewP@ss2' }),
+    ).rejects.toThrow('Invalid credentials')
+  })
+
   it('throws ValidationError when new password equals current password', async () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(BASE_USER)
     vi.mocked(verifyPassword).mockResolvedValue(true)
@@ -168,6 +239,15 @@ describe('changePassword', () => {
         newPassword: 'SameP@ss1',
       }),
     ).rejects.toThrow(ValidationError)
+  })
+
+  it('error message specifies new password must differ', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(BASE_USER)
+    vi.mocked(verifyPassword).mockResolvedValue(true)
+
+    await expect(
+      changePassword(BASE_USER.id, { currentPassword: 'SameP@ss1', newPassword: 'SameP@ss1' }),
+    ).rejects.toThrow('New password must differ from the current password')
   })
 
   it('never updates the record if currentPassword verification fails', async () => {

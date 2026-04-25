@@ -135,7 +135,7 @@ describe('documents.service', () => {
   })
 
   describe('sendDocument', () => {
-    it('calls POST /documents/:id/send without override email', async () => {
+    it('calls POST /documents/:id/send with empty body by default', async () => {
       mockPost.mockResolvedValueOnce({ data: { message: 'Sent to acme@example.com' } })
 
       const result = await sendDocument('d1')
@@ -147,10 +147,22 @@ describe('documents.service', () => {
     it('includes recipientEmail when provided', async () => {
       mockPost.mockResolvedValueOnce({ data: { message: 'Sent to other@example.com' } })
 
-      await sendDocument('d1', 'other@example.com')
+      await sendDocument('d1', { recipientEmail: 'other@example.com' })
 
       expect(mockPost).toHaveBeenCalledWith('/documents/d1/send', {
         recipientEmail: 'other@example.com',
+      })
+    })
+
+    it('includes locale and message when provided', async () => {
+      mockPost.mockResolvedValueOnce({ data: { message: 'Sent' } })
+
+      await sendDocument('d1', { recipientEmail: 'x@x.com', locale: 'pt-br', message: 'Olá!' })
+
+      expect(mockPost).toHaveBeenCalledWith('/documents/d1/send', {
+        recipientEmail: 'x@x.com',
+        locale: 'pt-br',
+        message: 'Olá!',
       })
     })
   })

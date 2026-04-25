@@ -56,35 +56,61 @@ describe('UnauthorizedError', () => {
     expect(err.message).toBe('Unauthorized')
     expect(err.name).toBe('UnauthorizedError')
   })
+
+  it('accepts a custom message', () => {
+    const err = new UnauthorizedError('Invalid email or password')
+    expect(err.message).toBe('Invalid email or password')
+    expect(err.statusCode).toBe(401)
+  })
 })
 
 describe('ForbiddenError', () => {
-  it('returns 403', () => {
+  it('returns 403 with default message', () => {
     const err = new ForbiddenError()
     expect(err.statusCode).toBe(403)
+    expect(err.message).toBe('Forbidden')
     expect(err.name).toBe('ForbiddenError')
+  })
+
+  it('accepts a custom message', () => {
+    const err = new ForbiddenError('Access denied')
+    expect(err.message).toBe('Access denied')
   })
 })
 
 describe('ConflictError', () => {
-  it('returns 409', () => {
+  it('returns 409 with default message', () => {
     const err = new ConflictError()
     expect(err.statusCode).toBe(409)
+    expect(err.message).toBe('Conflict')
     expect(err.name).toBe('ConflictError')
+  })
+
+  it('accepts a custom message', () => {
+    const err = new ConflictError('Email already in use')
+    expect(err.message).toBe('Email already in use')
   })
 })
 
 describe('ValidationError', () => {
-  it('returns 422', () => {
+  it('returns 422 with default message', () => {
     const err = new ValidationError()
     expect(err.statusCode).toBe(422)
+    expect(err.message).toBe('Validation error')
     expect(err.name).toBe('ValidationError')
+  })
+
+  it('accepts a custom message', () => {
+    const err = new ValidationError('Title is required')
+    expect(err.message).toBe('Title is required')
   })
 })
 
 describe('UnprocessableEntityError', () => {
-  it('returns 422', () => {
+  it('returns 422 with default message', () => {
     const err = new UnprocessableEntityError()
     expect(err.statusCode).toBe(422)
+    expect(err.message).toBe('Unprocessable entity')
+    expect(err.name).toBe('UnprocessableEntityError')
   })
 })

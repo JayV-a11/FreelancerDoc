@@ -135,6 +135,18 @@ describe('Documents Routes', () => {
       expect(response.statusCode).toBe(422)
     })
 
+    it('422 response includes the specific Zod validation message, not a generic fallback', async () => {
+      const response = await app.inject({
+        method: 'GET',
+        url: '/documents?status=INVALID',
+        headers: { Authorization: `Bearer ${validToken}` },
+      })
+
+      const body = response.json<{ message: string }>()
+      expect(body.message).not.toBe('Validation failed')
+      expect(body.message.length).toBeGreaterThan(0)
+    })
+
     it('returns 401 without authentication', async () => {
       const response = await app.inject({ method: 'GET', url: '/documents' })
       expect(response.statusCode).toBe(401)
@@ -180,6 +192,19 @@ describe('Documents Routes', () => {
       })
 
       expect(response.statusCode).toBe(422)
+    })
+
+    it('422 response includes specific Zod message for invalid email', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/documents',
+        headers: { Authorization: `Bearer ${validToken}` },
+        payload: { ...VALID_CREATE_BODY, clientEmail: 'not-an-email' },
+      })
+
+      const body = response.json<{ message: string }>()
+      expect(body.message).not.toBe('Validation failed')
+      expect(body.message).toBe('Client email must be a valid email')
     })
 
     it('returns 422 when totalValue is not positive', async () => {
@@ -296,6 +321,19 @@ describe('Documents Routes', () => {
       expect(response.statusCode).toBe(422)
     })
 
+    it('422 response includes the specific Zod message when body is empty', async () => {
+      const response = await app.inject({
+        method: 'PATCH',
+        url: `/documents/${DOCUMENT_ID}`,
+        headers: { Authorization: `Bearer ${validToken}` },
+        payload: {},
+      })
+
+      const body = response.json<{ message: string }>()
+      expect(body.message).not.toBe('Validation failed')
+      expect(body.message).toBe('At least one field must be provided')
+    })
+
     it('returns 422 when totalValue is zero', async () => {
       const response = await app.inject({
         method: 'PATCH',
@@ -344,6 +382,19 @@ describe('Documents Routes', () => {
       })
 
       expect(response.statusCode).toBe(422)
+    })
+
+    it('422 response includes specific Zod message for invalid status value', async () => {
+      const response = await app.inject({
+        method: 'PATCH',
+        url: `/documents/${DOCUMENT_ID}/status`,
+        headers: { Authorization: `Bearer ${validToken}` },
+        payload: { status: 'INVALID' },
+      })
+
+      const body = response.json<{ message: string }>()
+      expect(body.message).not.toBe('Validation failed')
+      expect(body.message.length).toBeGreaterThan(0)
     })
 
     it('returns 422 for an invalid transition', async () => {

@@ -132,6 +132,19 @@ describe('Documents Send Email Route', () => {
       expect(response.statusCode).toBe(422)
     })
 
+    it('422 body includes specific Zod message for invalid recipientEmail', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: `/documents/${DOCUMENT_ID}/send`,
+        headers: { Authorization: `Bearer ${validToken}` },
+        payload: { recipientEmail: 'not-an-email' },
+      })
+
+      const body = response.json<{ message: string }>()
+      expect(body.message).not.toBe('Validation failed')
+      expect(body.message).toBe('recipientEmail must be a valid email')
+    })
+
     it('returns 404 when document does not exist', async () => {
       vi.mocked(prisma.document.findFirst).mockResolvedValue(null)
 
@@ -151,6 +164,134 @@ describe('Documents Send Email Route', () => {
       })
 
       expect(response.statusCode).toBe(401)
+    })
+
+    it('forwards locale to sendDocumentByEmail', async () => {
+      await app.inject({
+        method: 'POST',
+        url: `/documents/${DOCUMENT_ID}/send`,
+        headers: { Authorization: `Bearer ${validToken}` },
+        payload: { locale: 'pt-br' },
+      })
+
+      const call = vi.mocked(sendDocumentByEmail).mock.calls[0][0]
+      expect(call.locale).toBe('pt-br')
+    })
+
+    it('defaults locale to "en" when not provided', async () => {
+      await app.inject({
+        method: 'POST',
+        url: `/documents/${DOCUMENT_ID}/send`,
+        headers: { Authorization: `Bearer ${validToken}` },
+      })
+
+      const call = vi.mocked(sendDocumentByEmail).mock.calls[0][0]
+      expect(call.locale).toBe('en')
+    })
+
+    it('forwards custom message to sendDocumentByEmail', async () => {
+      await app.inject({
+        method: 'POST',
+        url: `/documents/${DOCUMENT_ID}/send`,
+        headers: { Authorization: `Bearer ${validToken}` },
+        payload: { message: 'Segue em anexo o documento.' },
+      })
+
+      const call = vi.mocked(sendDocumentByEmail).mock.calls[0][0]
+      expect(call.message).toBe('Segue em anexo o documento.')
+    })
+
+    it('returns 422 when message exceeds 2000 characters', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: `/documents/${DOCUMENT_ID}/send`,
+        headers: { Authorization: `Bearer ${validToken}` },
+        payload: { message: 'x'.repeat(2001) },
+      })
+
+      expect(response.statusCode).toBe(422)
+    })
+
+    it('uses professionalName as senderName when set', async () => {
+      vi.mocked(prisma.user.findUnique).mockResolvedValue({
+        ...USER_PROFILE,
+        professionalName: 'Alice Dev',
+      } as never)
+
+      await app.inject({
+        method: 'POST',
+        url: `/documents/${DOCUMENT_ID}/send`,
+        headers: { Authorization: `Bearer ${validToken}` },
+      })
+
+      const call = vi.mocked(sendDocumentByEmail).mock.calls[0][0]
+      expect(call.senderName).toBe('Alice Dev')
+    })
+
+    it('falls back to name when professionalName is null', async () => {
+      vi.mocked(prisma.user.findUnique).mockResolvedValue({
+        ...USER_PROFILE,
+        professionalName: null,
+        name: 'Alice Freelancer',
+      } as never)
+
+      await app.inject({
+        method: 'POST',
+        url: `/documents/${DOCUMENT_ID}/send`,
+        headers: { Authorization: `Bearer ${validToken}` },
+      })
+
+      const call = vi.mocked(sendDocumentByEmail).mock.calls[0][0]
+      expect(call.senderName).toBe('Alice Freelancer')
+    })
+
+    it('falls back to email when both professionalName and name are null', async () => {
+      vi.mocked(prisma.user.findUnique).mockResolvedValue(null)
+
+      await app.inject({
+        method: 'POST',
+        url: `/documents/${DOCUMENT_ID}/send`,
+        headers: { Authorization: `Bearer ${validToken}` },
+      })
+
+      const call = vi.mocked(sendDocumentByEmail).mock.calls[0][0]
+      expect(call.senderName).toBe('alice@example.com')
+    })
+
+    it('looks up sender with the authenticated user id', async () => {
+      await app.inject({
+        method: 'POST',
+        url: `/documents/${DOCUMENT_ID}/send`,
+        headers: { Authorization: `Bearer ${validToken}` },
+      })
+
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: { id: USER_ID },
+        select: { name: true, professionalName: true },
+      })
+    })
+
+    it('response body message includes the recipient email', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: `/documents/${DOCUMENT_ID}/send`,
+        headers: { Authorization: `Bearer ${validToken}` },
+      })
+
+      const body = response.json<{ message: string }>()
+      expect(body.message).toContain('acme@example.com')
+    })
+
+    it('response body message includes override email when provided', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: `/documents/${DOCUMENT_ID}/send`,
+        headers: { Authorization: `Bearer ${validToken}` },
+        payload: { recipientEmail: 'other@example.com' },
+      })
+
+      const body = response.json<{ message: string }>()
+      expect(body.message).toContain('other@example.com')
     })
   })
 })

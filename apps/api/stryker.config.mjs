@@ -1,7 +1,7 @@
 /** @type {import('@stryker-mutator/core').PartialStrykerOptions} */
 export default {
   testRunner: 'vitest',
-  reporters: ['html', 'clear-text', 'progress'],
+  reporters: ['html', 'clear-text', 'progress', 'json'],
   coverageAnalysis: 'perTest',
   thresholds: {
     high: 80,

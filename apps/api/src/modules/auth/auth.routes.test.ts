@@ -151,6 +151,35 @@ describe('Auth Routes', () => {
       expect(response.statusCode).toBe(422)
     })
 
+    it('422 body includes specific Zod validation message', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/auth/register',
+        payload: { email: 'not-an-email', password: 'SecureP@ss1', name: 'Test' },
+      })
+
+      const body = response.json<{ message: string }>()
+      expect(body.message).not.toBe('Validation failed')
+      expect(body.message).toBe('Invalid email address')
+    })
+
+    it('refresh token cookie sub matches the registered user id', async () => {
+      vi.mocked(prisma.user.findUnique).mockResolvedValue(null)
+      vi.mocked(prisma.user.create).mockResolvedValue(TEST_USER)
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/auth/register',
+        payload: { email: 'test@example.com', password: 'SecureP@ss1', name: 'Test User' },
+      })
+
+      const setCookie = response.headers['set-cookie'] as string
+      const tokenMatch = setCookie.match(/refresh_token=([^;]+)/)
+      expect(tokenMatch).not.toBeNull()
+      const decoded = jwt.decode(tokenMatch![1]) as { sub: string }
+      expect(decoded.sub).toBe(TEST_USER.id)
+    })
+
     it('returns 422 for password shorter than 8 characters', async () => {
       const response = await app.inject({
         method: 'POST',
@@ -250,6 +279,68 @@ describe('Auth Routes', () => {
 
       expect(response.statusCode).toBe(422)
     })
+
+    it('422 body includes specific Zod validation message for login', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/auth/login',
+        payload: { password: 'SecureP@ss1' },
+      })
+
+      const body = response.json<{ message: string }>()
+      expect(body.message).not.toBe('Validation failed')
+      expect(body.message.length).toBeGreaterThan(0)
+    })
+
+    it('login response body includes user id, email and name', async () => {
+      vi.mocked(prisma.user.findUnique).mockResolvedValue(TEST_USER)
+      vi.mocked(verifyPassword).mockResolvedValue(true)
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/auth/login',
+        payload: { email: 'test@example.com', password: 'SecureP@ss1' },
+      })
+
+      const body = response.json<{ user: { id: string; email: string; name: string } }>()
+      expect(body.user.id).toBe(TEST_USER.id)
+      expect(body.user.email).toBe(TEST_USER.email)
+      expect(body.user.name).toBe(TEST_USER.name)
+    })
+
+    it('login refresh token cookie sub matches the user id', async () => {
+      vi.mocked(prisma.user.findUnique).mockResolvedValue(TEST_USER)
+      vi.mocked(verifyPassword).mockResolvedValue(true)
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/auth/login',
+        payload: { email: 'test@example.com', password: 'SecureP@ss1' },
+      })
+
+      const setCookie = response.headers['set-cookie'] as string
+      const tokenMatch = setCookie.match(/refresh_token=([^;]+)/)
+      expect(tokenMatch).not.toBeNull()
+      const decoded = jwt.decode(tokenMatch![1]) as { sub: string }
+      expect(decoded.sub).toBe(TEST_USER.id)
+    })
+
+    it('access token contains correct sub, email and role claims', async () => {
+      vi.mocked(prisma.user.findUnique).mockResolvedValue(TEST_USER)
+      vi.mocked(verifyPassword).mockResolvedValue(true)
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/auth/login',
+        payload: { email: 'test@example.com', password: 'SecureP@ss1' },
+      })
+
+      const { accessToken } = response.json<{ accessToken: string }>()
+      const payload = jwt.decode(accessToken) as { sub: string; email: string; role: string }
+      expect(payload.sub).toBe(TEST_USER.id)
+      expect(payload.email).toBe(TEST_USER.email)
+      expect(payload.role).toBe('authenticated')
+    })
   })
 
   // ── POST /auth/logout ────────────────────────────────────────────────────
@@ -308,6 +399,36 @@ describe('Auth Routes', () => {
 
       expect(response.statusCode).toBe(200)
       expect(response.json<{ accessToken: string }>().accessToken).toBeDefined()
+    })
+
+    it('new access token from refresh contains correct claims', async () => {
+      vi.mocked(prisma.user.findUnique).mockResolvedValue(TEST_USER)
+      const refreshToken = makeRefreshToken(TEST_USER.id)
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/auth/refresh',
+        cookies: { refresh_token: refreshToken },
+      })
+
+      const { accessToken } = response.json<{ accessToken: string }>()
+      const payload = jwt.decode(accessToken) as { sub: string; email: string; role: string }
+      expect(payload.sub).toBe(TEST_USER.id)
+      expect(payload.email).toBe(TEST_USER.email)
+      expect(payload.role).toBe('authenticated')
+    })
+
+    it('looks up user by id with correct where clause during refresh', async () => {
+      vi.mocked(prisma.user.findUnique).mockResolvedValue(TEST_USER)
+      const refreshToken = makeRefreshToken(TEST_USER.id)
+
+      await app.inject({
+        method: 'POST',
+        url: '/auth/refresh',
+        cookies: { refresh_token: refreshToken },
+      })
+
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { id: TEST_USER.id } })
     })
 
     it('rotates the refresh token (new cookie differs from old)', async () => {

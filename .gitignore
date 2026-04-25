@@ -26,6 +26,7 @@ yarn-error.log*
 coverage/
 .nyc_output/
 stryker-tmp/
+.stryker-tmp/
 reports/
 
 # Prisma

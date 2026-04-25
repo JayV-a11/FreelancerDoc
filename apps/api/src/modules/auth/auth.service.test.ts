@@ -90,6 +90,30 @@ describe('registerUser', () => {
       registerUser({ email: 'alice@example.com', password: 'SecureP@ss1', name: 'Alice' }),
     ).rejects.toThrow('Email already in use')
   })
+
+  it('checks for existing email with the correct where clause', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(null)
+    vi.mocked(prisma.user.create).mockResolvedValue(MOCK_USER)
+
+    await registerUser({ email: 'alice@example.com', password: 'SecureP@ss1', name: 'Alice' })
+
+    expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { email: 'alice@example.com' } })
+  })
+
+  it('creates user with email, hashed password and name', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(null)
+    vi.mocked(prisma.user.create).mockResolvedValue(MOCK_USER)
+
+    await registerUser({ email: 'alice@example.com', password: 'SecureP@ss1', name: 'Alice' })
+
+    expect(prisma.user.create).toHaveBeenCalledWith({
+      data: {
+        email: 'alice@example.com',
+        passwordHash: '$argon2id$hashed',
+        name: 'Alice',
+      },
+    })
+  })
 })
 
 describe('loginUser', () => {
@@ -183,6 +207,26 @@ describe('loginUser', () => {
       loginUser({ email: 'alice@example.com', password: 'SecureP@ss1' }),
     ).rejects.toThrow(UnauthorizedError)
   })
+
+  it('looks up user by email with correct where clause', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(MOCK_USER)
+    vi.mocked(verifyPassword).mockResolvedValue(true)
+
+    await loginUser({ email: 'alice@example.com', password: 'SecureP@ss1' })
+
+    expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { email: 'alice@example.com' } })
+  })
+
+  it('returns safe user without passwordHash or deletedAt for valid login', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(MOCK_USER)
+    vi.mocked(verifyPassword).mockResolvedValue(true)
+
+    const result = await loginUser({ email: 'alice@example.com', password: 'SecureP@ss1' })
+
+    expect(result).not.toHaveProperty('passwordHash')
+    expect(result).not.toHaveProperty('deletedAt')
+    expect(result.id).toBe(MOCK_USER.id)
+  })
 })
 
 describe('getUserById', () => {
@@ -215,5 +259,13 @@ describe('getUserById', () => {
     const result = await getUserById(MOCK_USER.id)
 
     expect(result).toBeNull()
+  })
+
+  it('looks up user by id with correct where clause', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(MOCK_USER)
+
+    await getUserById(MOCK_USER.id)
+
+    expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { id: MOCK_USER.id } })
   })
 })

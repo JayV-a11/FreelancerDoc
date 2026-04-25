@@ -147,6 +147,19 @@ describe('Templates Routes', () => {
       expect(response.statusCode).toBe(422)
     })
 
+    it('422 body includes specific Zod message for missing name', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/templates',
+        headers: { Authorization: `Bearer ${validToken}` },
+        payload: { name: '', type: 'PROPOSAL', content: {} }, // empty name triggers min(1)
+      })
+
+      const body = response.json<{ message: string }>()
+      expect(body.message).not.toBe('Validation failed')
+      expect(body.message).toBe('Name is required')
+    })
+
     it('returns 422 when type is invalid', async () => {
       const response = await app.inject({
         method: 'POST',
@@ -255,6 +268,19 @@ describe('Templates Routes', () => {
       })
 
       expect(response.statusCode).toBe(422)
+    })
+
+    it('422 body includes specific Zod message when body is empty', async () => {
+      const response = await app.inject({
+        method: 'PATCH',
+        url: `/templates/${TEMPLATE_ID}`,
+        headers: { Authorization: `Bearer ${validToken}` },
+        payload: {},
+      })
+
+      const body = response.json<{ message: string }>()
+      expect(body.message).not.toBe('Validation failed')
+      expect(body.message).toBe('At least one field must be provided')
     })
 
     it('returns 422 when type is invalid', async () => {

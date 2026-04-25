@@ -86,6 +86,12 @@ describe('getTemplate', () => {
     await expect(getTemplate(USER_ID, 'non-existent')).rejects.toThrow(NotFoundError)
   })
 
+  it('error message identifies the Template resource', async () => {
+    vi.mocked(prisma.template.findFirst).mockResolvedValue(null)
+
+    await expect(getTemplate(USER_ID, 'non-existent')).rejects.toThrow('Template not found')
+  })
+
   it('throws NotFoundError when template belongs to another user', async () => {
     // findFirst with userId filter returns null for cross-user access
     vi.mocked(prisma.template.findFirst).mockResolvedValue(null)
@@ -149,6 +155,29 @@ describe('updateTemplate', () => {
       where: { id: BASE_TEMPLATE.id },
       data: { name: 'Updated Proposal' },
     })
+  })
+
+  it('includes content in update data when content is provided', async () => {
+    const newContent = { blocks: [{ type: 'text', value: 'New content' }] }
+    const updated = { ...BASE_TEMPLATE, content: newContent }
+    vi.mocked(prisma.template.findFirst).mockResolvedValue(BASE_TEMPLATE)
+    vi.mocked(prisma.template.update).mockResolvedValue(updated)
+
+    await updateTemplate(USER_ID, BASE_TEMPLATE.id, { content: newContent })
+
+    const [call] = vi.mocked(prisma.template.update).mock.calls
+    expect(call?.[0]?.data).toHaveProperty('content', newContent)
+  })
+
+  it('does not include content in update data when content is not provided', async () => {
+    const updated = { ...BASE_TEMPLATE, name: 'Only Name Updated' }
+    vi.mocked(prisma.template.findFirst).mockResolvedValue(BASE_TEMPLATE)
+    vi.mocked(prisma.template.update).mockResolvedValue(updated)
+
+    await updateTemplate(USER_ID, BASE_TEMPLATE.id, { name: 'Only Name Updated' })
+
+    const [call] = vi.mocked(prisma.template.update).mock.calls
+    expect(call?.[0]?.data).not.toHaveProperty('content')
   })
 
   it('throws NotFoundError when template not owned by user', async () => {

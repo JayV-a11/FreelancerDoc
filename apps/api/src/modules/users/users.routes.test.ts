@@ -173,6 +173,19 @@ describe('Users Routes', () => {
       expect(response.statusCode).toBe(422)
     })
 
+    it('422 body includes specific Zod message, not generic fallback', async () => {
+      const response = await app.inject({
+        method: 'PATCH',
+        url: '/users/me',
+        headers: { Authorization: `Bearer ${validToken}` },
+        payload: { name: '' }, // triggers min(1) error
+      })
+
+      const body = response.json<{ message: string }>()
+      expect(body.message).not.toBe('Validation failed')
+      expect(body.message).toBe('Name cannot be empty')
+    })
+
     it('returns 422 when name is an empty string', async () => {
       const response = await app.inject({
         method: 'PATCH',
@@ -271,6 +284,19 @@ describe('Users Routes', () => {
       })
 
       expect(response.statusCode).toBe(422)
+    })
+
+    it('422 body includes specific Zod message for missing currentPassword', async () => {
+      const response = await app.inject({
+        method: 'PATCH',
+        url: '/users/me/password',
+        headers: { Authorization: `Bearer ${validToken}` },
+        payload: { currentPassword: '', newPassword: 'NewP@ss2!' }, // empty triggers min(1)
+      })
+
+      const body = response.json<{ message: string }>()
+      expect(body.message).not.toBe('Validation failed')
+      expect(body.message).toBe('Current password is required')
     })
 
     it('returns 401 without a Bearer token', async () => {

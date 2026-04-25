@@ -141,5 +141,104 @@ describe('Documents PDF Route', () => {
 
       expect(response.statusCode).toBe(401)
     })
+
+    it('forwards locale query param to generateDocumentPdf', async () => {
+      vi.mocked(prisma.document.findFirst).mockResolvedValue(DOCUMENT_WITH_VERSIONS as never)
+      vi.mocked(generateDocumentPdf).mockResolvedValue(FAKE_PDF_BUFFER)
+
+      await app.inject({
+        method: 'GET',
+        url: `/documents/${DOCUMENT_ID}/pdf?locale=pt-br`,
+        headers: { Authorization: `Bearer ${validToken}` },
+      })
+
+      const call = vi.mocked(generateDocumentPdf).mock.calls[0]
+      expect(call[1]).toMatchObject({ locale: 'pt-br' })
+    })
+
+    it('defaults locale to "en" when not provided', async () => {
+      vi.mocked(prisma.document.findFirst).mockResolvedValue(DOCUMENT_WITH_VERSIONS as never)
+      vi.mocked(generateDocumentPdf).mockResolvedValue(FAKE_PDF_BUFFER)
+
+      await app.inject({
+        method: 'GET',
+        url: `/documents/${DOCUMENT_ID}/pdf`,
+        headers: { Authorization: `Bearer ${validToken}` },
+      })
+
+      const call = vi.mocked(generateDocumentPdf).mock.calls[0]
+      expect(call[1]).toMatchObject({ locale: 'en' })
+    })
+
+    it('looks up sender user with the authenticated user id', async () => {
+      vi.mocked(prisma.document.findFirst).mockResolvedValue(DOCUMENT_WITH_VERSIONS as never)
+      vi.mocked(prisma.user.findUnique).mockResolvedValue({
+        name: 'Alice',
+        professionalName: 'Alice Dev',
+      } as never)
+      vi.mocked(generateDocumentPdf).mockResolvedValue(FAKE_PDF_BUFFER)
+
+      await app.inject({
+        method: 'GET',
+        url: `/documents/${DOCUMENT_ID}/pdf`,
+        headers: { Authorization: `Bearer ${validToken}` },
+      })
+
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: { id: USER_ID },
+        select: { name: true, professionalName: true },
+      })
+    })
+
+    it('forwards found user to generateDocumentPdf', async () => {
+      const senderUser = { name: 'Alice', professionalName: 'Alice Dev' }
+      vi.mocked(prisma.document.findFirst).mockResolvedValue(DOCUMENT_WITH_VERSIONS as never)
+      vi.mocked(prisma.user.findUnique).mockResolvedValue(senderUser as never)
+      vi.mocked(generateDocumentPdf).mockResolvedValue(FAKE_PDF_BUFFER)
+
+      await app.inject({
+        method: 'GET',
+        url: `/documents/${DOCUMENT_ID}/pdf`,
+        headers: { Authorization: `Bearer ${validToken}` },
+      })
+
+      const call = vi.mocked(generateDocumentPdf).mock.calls[0]
+      expect(call[1]).toMatchObject({ user: senderUser })
+    })
+
+    it('falls back to empty user when sender not found in db', async () => {
+      vi.mocked(prisma.document.findFirst).mockResolvedValue(DOCUMENT_WITH_VERSIONS as never)
+      vi.mocked(prisma.user.findUnique).mockResolvedValue(null)
+      vi.mocked(generateDocumentPdf).mockResolvedValue(FAKE_PDF_BUFFER)
+
+      await app.inject({
+        method: 'GET',
+        url: `/documents/${DOCUMENT_ID}/pdf`,
+        headers: { Authorization: `Bearer ${validToken}` },
+      })
+
+      const call = vi.mocked(generateDocumentPdf).mock.calls[0]
+      expect(call[1]).toMatchObject({ user: { name: '', professionalName: null } })
+    })
+
+    it('sanitizes title with special chars into filename', async () => {
+      const docWithSpecialTitle = {
+        ...DOCUMENT_WITH_VERSIONS,
+        title: 'My Proposal #1 (2026)',
+      }
+      vi.mocked(prisma.document.findFirst).mockResolvedValue(docWithSpecialTitle as never)
+      vi.mocked(generateDocumentPdf).mockResolvedValue(FAKE_PDF_BUFFER)
+
+      const response = await app.inject({
+        method: 'GET',
+        url: `/documents/${DOCUMENT_ID}/pdf`,
+        headers: { Authorization: `Bearer ${validToken}` },
+      })
+
+      const disposition = response.headers['content-disposition'] as string
+      expect(disposition).not.toContain('#')
+      expect(disposition).not.toContain('(')
+      expect(disposition).toContain('My_Proposal__1__2026_.pdf')
+    })
   })
 })
