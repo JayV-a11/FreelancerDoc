@@ -165,6 +165,8 @@
       "title": "Send document by email",
       "description": "Leave blank to send to",
       "override": "Override recipient (optional)",
+      "messageLabel": "Custom message (optional)",
+      "messagePlaceholder": "Add a message for the client…",
       "send": "Send",
       "sending": "Sending…"
     }

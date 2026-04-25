@@ -145,7 +145,7 @@ export default function ProfilePage() {
           >
 
             <div className="space-y-1">
-              <Label htmlFor="name">{t('personal.name')}</Label>
+              <Label htmlFor="name">{t('personal.fullName')}</Label>
               <Input id="name" {...registerProfile('name')} />
               {profileErrors.name && (
                 <p className="text-xs text-destructive">{profileErrors.name.message}</p>
@@ -186,7 +186,7 @@ export default function ProfilePage() {
             </div>
 
             <Button type="submit" disabled={profileSubmitting}>
-              {profileSubmitting ? tCommon('saving') : t('personal.save')}
+              {profileSubmitting ? tCommon('saving') : t('personal.submit')}
             </Button>
           </form>
         </CardContent>

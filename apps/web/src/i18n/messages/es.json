@@ -165,6 +165,8 @@
       "title": "Enviar documento por correo",
       "description": "Deja en blanco para enviar a",
       "override": "Reemplazar destinatario (opcional)",
+      "messageLabel": "Mensaje personalizado (opcional)",
+      "messagePlaceholder": "Agrega un mensaje para el cliente…",
       "send": "Enviar",
       "sending": "Enviando…"
     }

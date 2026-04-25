@@ -22,6 +22,8 @@ import { prisma } from '@/shared/config/prisma'
 
 const sendDocumentSchema = z.object({
   recipientEmail: z.string().email('recipientEmail must be a valid email').optional(),
+  locale: z.string().optional().default('en'),
+  message: z.string().max(2000).optional(),
 })
 
 export async function documentsRoutes(app: FastifyInstance): Promise<void> {
@@ -90,8 +92,19 @@ export async function documentsRoutes(app: FastifyInstance): Promise<void> {
   // ── GET /documents/:id/pdf ───────────────────────────────────────────────
   app.get('/:id/pdf', async (request, reply) => {
     const { id } = request.params as { id: string }
+    const { locale = 'en' } = request.query as { locale?: string }
+
     const document = await getDocument(request.user.sub, id)
-    const pdfBuffer = await generateDocumentPdf(document)
+
+    const sender = await prisma.user.findUnique({
+      where: { id: request.user.sub },
+      select: { name: true, professionalName: true },
+    })
+
+    const pdfBuffer = await generateDocumentPdf(document, {
+      locale,
+      user: sender ?? { name: '', professionalName: null },
+    })
 
     // Sanitize the title for use as a filename (replace non-alphanumeric with _)
     const safeName = document.title.replace(/[^a-zA-Z0-9]/g, '_')
@@ -116,14 +129,18 @@ export async function documentsRoutes(app: FastifyInstance): Promise<void> {
     }
 
     const document = await getDocument(request.user.sub, id)
-    const pdfBuffer = await generateDocumentPdf(document)
 
-    // Look up sender name from the user record
+    // Look up sender — must happen before PDF generation so placeholders are filled
     const sender = await prisma.user.findUnique({
       where: { id: request.user.sub },
-      select: { name: true },
+      select: { name: true, professionalName: true },
     })
-    const senderName = sender?.name ?? request.user.email
+    const senderName = sender?.professionalName ?? sender?.name ?? request.user.email
+
+    const pdfBuffer = await generateDocumentPdf(document, {
+      locale: parseResult.data.locale,
+      user: sender ?? { name: '', professionalName: null },
+    })
 
     const to = parseResult.data.recipientEmail ?? document.clientEmail
 
@@ -132,6 +149,8 @@ export async function documentsRoutes(app: FastifyInstance): Promise<void> {
       documentTitle: document.title,
       senderName,
       pdfBuffer,
+      locale: parseResult.data.locale,
+      message: parseResult.data.message,
     })
 
     return reply.status(200).send({ message: `Document sent to ${to}` })

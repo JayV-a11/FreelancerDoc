@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Download, Send, ArrowLeft } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import {
   getDocument,
@@ -39,6 +39,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Textarea } from '@/components/ui/textarea'
 
 const STATUS_VARIANT: Record<
   DocumentStatus,
@@ -59,6 +61,7 @@ const VALID_TRANSITIONS: Partial<Record<DocumentStatus, DocumentStatus[]>> = {
 export default function DocumentDetailPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const locale = useLocale()
   const t = useTranslations('documentDetail')
   const tDoc = useTranslations('documents')
   const tCommon = useTranslations('common')
@@ -67,6 +70,7 @@ export default function DocumentDetailPage() {
   const [error, setError] = useState<string | null>(null)
   const [sendDialogOpen, setSendDialogOpen] = useState(false)
   const [recipientEmail, setRecipientEmail] = useState('')
+  const [customMessage, setCustomMessage] = useState('')
   const [sending, setSending] = useState(false)
 
   const load = () => {
@@ -94,9 +98,14 @@ export default function DocumentDetailPage() {
     if (!doc) return
     setSending(true)
     try {
-      const result = await sendDocument(doc.id, recipientEmail || undefined)
+      const result = await sendDocument(doc.id, {
+        recipientEmail: recipientEmail || undefined,
+        locale,
+        message: customMessage || undefined,
+      })
       toast.success(result.message)
       setSendDialogOpen(false)
+      setCustomMessage('')
     } catch {
       toast.error(t('failedSend'))
     } finally {
@@ -106,7 +115,7 @@ export default function DocumentDetailPage() {
 
   const handleDownload = async () => {
     if (!doc) return
-    await downloadDocumentPdf(doc.id, doc.title).catch(() =>
+    await downloadDocumentPdf(doc.id, doc.title, locale).catch(() =>
       toast.error(t('failedDownload')),
     )
   }
@@ -265,15 +274,27 @@ export default function DocumentDetailPage() {
               <strong>{doc.clientEmail}</strong>.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-1 py-2">
-            <Label htmlFor="recipientEmail">{t('sendDialog.override')}</Label>
-            <Input
-              id="recipientEmail"
-              type="email"
-              placeholder={doc.clientEmail}
-              value={recipientEmail}
-              onChange={(e) => setRecipientEmail(e.target.value)}
-            />
+          <div className="space-y-3 py-2">
+            <div className="space-y-1">
+              <Label htmlFor="recipientEmail">{t('sendDialog.override')}</Label>
+              <Input
+                id="recipientEmail"
+                type="email"
+                placeholder={doc.clientEmail}
+                value={recipientEmail}
+                onChange={(e) => setRecipientEmail(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="customMessage">{t('sendDialog.messageLabel')}</Label>
+              <Textarea
+                id="customMessage"
+                rows={3}
+                placeholder={t('sendDialog.messagePlaceholder')}
+                value={customMessage}
+                onChange={(e) => setCustomMessage(e.target.value)}
+              />
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setSendDialogOpen(false)}>

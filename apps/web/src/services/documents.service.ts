@@ -54,10 +54,12 @@ export async function deleteDocument(id: string): Promise<void> {
 
 export async function sendDocument(
   id: string,
-  recipientEmail?: string,
+  options: { recipientEmail?: string; locale?: string; message?: string } = {},
 ): Promise<{ message: string }> {
   const response = await api.post<{ message: string }>(`/documents/${id}/send`, {
-    ...(recipientEmail ? { recipientEmail } : {}),
+    ...(options.recipientEmail ? { recipientEmail: options.recipientEmail } : {}),
+    ...(options.locale ? { locale: options.locale } : {}),
+    ...(options.message ? { message: options.message } : {}),
   })
   return response.data
 }
@@ -65,8 +67,12 @@ export async function sendDocument(
 export async function downloadDocumentPdf(
   id: string,
   filename: string,
+  locale?: string,
 ): Promise<void> {
-  const response = await api.get(`/documents/${id}/pdf`, { responseType: 'blob' })
+  const response = await api.get(`/documents/${id}/pdf`, {
+    params: locale ? { locale } : undefined,
+    responseType: 'blob',
+  })
   const url = URL.createObjectURL(response.data as Blob)
   const a = document.createElement('a')
   a.href = url
