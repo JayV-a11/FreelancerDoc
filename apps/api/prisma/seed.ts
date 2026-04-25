@@ -40,7 +40,7 @@ async function main(): Promise<void> {
 
   const alice = await prisma.user.upsert({
     where: { email: 'alice@freelancedoc.dev' },
-    update: {},
+    update: { passwordHash },
     create: {
       name: 'Alice Freelancer',
       email: 'alice@freelancedoc.dev',
@@ -54,7 +54,7 @@ async function main(): Promise<void> {
 
   const bob = await prisma.user.upsert({
     where: { email: 'bob@freelancedoc.dev' },
-    update: {},
+    update: { passwordHash },
     create: {
       name: 'Bob Designer',
       email: 'bob@freelancedoc.dev',

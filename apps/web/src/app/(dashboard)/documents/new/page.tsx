@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -8,7 +8,8 @@ import { useRouter } from 'next/navigation'
 import { Plus, Trash2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { createDocument } from '@/services/documents.service'
-import type { ContentBlock } from '@/types'
+import { listTemplates } from '@/services/templates.service'
+import type { ContentBlock, Template } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -20,6 +21,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 
@@ -40,8 +48,25 @@ export default function NewDocumentPage() {
     { type: 'heading', value: '' },
     { type: 'text', value: '' },
   ])
+  const [templates, setTemplates] = useState<Template[]>([])
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('')
   const t = useTranslations('documentsNew')
   const tCommon = useTranslations('common')
+
+  useEffect(() => {
+    listTemplates().then(setTemplates).catch(() => {})
+  }, [])
+
+  const handleTemplateChange = (templateId: string) => {
+    setSelectedTemplateId(templateId)
+    if (!templateId) return
+    const template = templates.find((tmpl) => tmpl.id === templateId)
+    if (!template) return
+    const content = template.content as { blocks?: ContentBlock[] }
+    if (content.blocks && content.blocks.length > 0) {
+      setBlocks(content.blocks.map((b) => ({ type: b.type, value: b.value })))
+    }
+  }
 
   const schema = useMemo(
     () =>
@@ -83,6 +108,7 @@ export default function NewDocumentPage() {
     try {
       await createDocument({
         ...data,
+        templateId: selectedTemplateId || null,
         clientDocument: data.clientDocument || null,
         validUntil: data.validUntil ? new Date(data.validUntil).toISOString() : null,
         content: { blocks },
@@ -112,6 +138,25 @@ export default function NewDocumentPage() {
             <CardTitle>{t('clientSection')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {templates.length > 0 && (
+              <div className="space-y-1">
+                <Label htmlFor="template">{t('template')}</Label>
+                <Select value={selectedTemplateId} onValueChange={handleTemplateChange}>
+                  <SelectTrigger id="template">
+                    <SelectValue placeholder={t('templatePlaceholder')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {templates.map((tmpl) => (
+                      <SelectItem key={tmpl.id} value={tmpl.id}>
+                        {tmpl.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">{t('templateHint')}</p>
+              </div>
+            )}
+
             <div className="space-y-1">
               <Label htmlFor="title">{t('documentTitle')}</Label>
               <Input id="title" {...register('title')} placeholder={t('titlePlaceholder')} />
@@ -255,4 +300,4 @@ export default function NewDocumentPage() {
   )
 }
 
-
+

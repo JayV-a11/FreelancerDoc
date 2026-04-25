@@ -75,6 +75,14 @@ api.interceptors.response.use(
       return Promise.reject(error)
     }
 
+    // Never attempt a silent refresh when the failing request is itself an
+    // auth endpoint — there is no session to refresh from yet (login) or the
+    // refresh token is already invalid/expired (/auth/refresh).
+    const requestUrl = originalRequest.url ?? ''
+    if (requestUrl.includes('/auth/login') || requestUrl.includes('/auth/refresh')) {
+      return Promise.reject(error)
+    }
+
     if (isRefreshing) {
       // Queue subsequent 401s while a refresh is in progress
       return new Promise((resolve, reject) => {
