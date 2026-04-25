@@ -102,11 +102,14 @@ npm install
 cp .env.example .env
 # Edit .env with your Supabase and SMTP credentials
 
-# 3. Generate Prisma client
-npm run db:generate --workspace=apps/api
+# 3. Apply the database schema to Supabase
+# Option A — paste the file contents in Supabase Dashboard → SQL Editor:
+open supabase/migrations/20260422000000_initial_schema.sql
+# Option B — run via psql (requires DIRECT_URL in .env):
+# psql "$DIRECT_URL" -f supabase/migrations/20260422000000_initial_schema.sql
 
-# 4. Run database migrations (requires DIRECT_URL in .env)
-npm run db:migrate:dev --workspace=apps/api
+# 4. Generate Prisma client
+npm run db:generate --workspace=apps/api
 
 # 5. Seed development data (optional)
 npm run db:seed --workspace=apps/api
@@ -185,7 +188,8 @@ Stryker is configured to **break the build** if the mutation score falls below *
 
 1. Create a Supabase project
 2. Copy the connection strings to `.env` (`DATABASE_URL` = pooler port 6543, `DIRECT_URL` = direct port 5432)
-3. Run `npm run db:migrate --workspace=apps/api` to apply all migrations (includes RLS policies)
+3. Apply the schema: paste `supabase/migrations/20260422000000_initial_schema.sql` in the Supabase Dashboard → SQL Editor and run it
+4. The migration is idempotent — safe to re-run on an existing database
 
 ---
 

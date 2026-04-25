@@ -6,8 +6,8 @@
 -- Run against Supabase via the dashboard SQL editor or:
 --   psql $DIRECT_URL -f supabase/migrations/20260422000000_initial_schema.sql
 --
--- IMPORTANT: This file is idempotent (IF NOT EXISTS everywhere).
--- Safe to re-run in CI against a fresh database.
+-- IMPORTANT: This file is idempotent — tables/indexes use IF NOT EXISTS,
+-- policies use DROP IF EXISTS + CREATE. Safe to re-run against an existing database.
 -- ============================================================
 
 -- ── Extensions ────────────────────────────────────────────────────────────
@@ -74,14 +74,16 @@ CREATE OR REPLACE TRIGGER users_updated_at
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 
 -- SELECT: authenticated user reads only their own record
-CREATE POLICY IF NOT EXISTS "users_select_own"
+DROP POLICY IF EXISTS "users_select_own" ON users;
+CREATE POLICY "users_select_own"
   ON users
   FOR SELECT
   USING (auth.uid() = id);
 
 -- UPDATE: authenticated user updates only their own record
 -- WITH CHECK ensures they cannot change their id to another user's id
-CREATE POLICY IF NOT EXISTS "users_update_own"
+DROP POLICY IF EXISTS "users_update_own" ON users;
+CREATE POLICY "users_update_own"
   ON users
   FOR UPDATE
   USING (auth.uid() = id)
@@ -112,7 +114,8 @@ CREATE OR REPLACE TRIGGER templates_updated_at
 
 ALTER TABLE templates ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY IF NOT EXISTS "templates_select_own"
+DROP POLICY IF EXISTS "templates_select_own" ON templates;
+CREATE POLICY "templates_select_own"
   ON templates
   FOR SELECT
   USING (auth.uid() = user_id);
@@ -120,18 +123,21 @@ CREATE POLICY IF NOT EXISTS "templates_select_own"
 -- WITH CHECK enforces that user_id equals the authenticated user's UUID.
 -- Combined with DEFAULT auth.uid() on the column, this prevents client-supplied
 -- user_id values from being honoured.
-CREATE POLICY IF NOT EXISTS "templates_insert_own"
+DROP POLICY IF EXISTS "templates_insert_own" ON templates;
+CREATE POLICY "templates_insert_own"
   ON templates
   FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY IF NOT EXISTS "templates_update_own"
+DROP POLICY IF EXISTS "templates_update_own" ON templates;
+CREATE POLICY "templates_update_own"
   ON templates
   FOR UPDATE
   USING  (auth.uid() = user_id)
   WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY IF NOT EXISTS "templates_delete_own"
+DROP POLICY IF EXISTS "templates_delete_own" ON templates;
+CREATE POLICY "templates_delete_own"
   ON templates
   FOR DELETE
   USING (auth.uid() = user_id);
@@ -167,19 +173,22 @@ CREATE OR REPLACE TRIGGER documents_updated_at
 
 ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY IF NOT EXISTS "documents_select_own"
+DROP POLICY IF EXISTS "documents_select_own" ON documents;
+CREATE POLICY "documents_select_own"
   ON documents
   FOR SELECT
   USING (auth.uid() = user_id);
 
-CREATE POLICY IF NOT EXISTS "documents_insert_own"
+DROP POLICY IF EXISTS "documents_insert_own" ON documents;
+CREATE POLICY "documents_insert_own"
   ON documents
   FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
 -- SENT documents can still be reached by this policy, but the service layer
 -- will reject any attempted mutation with a 403 before Prisma is called.
-CREATE POLICY IF NOT EXISTS "documents_update_own"
+DROP POLICY IF EXISTS "documents_update_own" ON documents;
+CREATE POLICY "documents_update_own"
   ON documents
   FOR UPDATE
   USING  (auth.uid() = user_id)
@@ -207,7 +216,8 @@ ALTER TABLE document_versions ENABLE ROW LEVEL SECURITY;
 
 -- SELECT only — joins with documents to verify ownership.
 -- No INSERT/UPDATE/DELETE policies → only service role can write.
-CREATE POLICY IF NOT EXISTS "document_versions_select_own"
+DROP POLICY IF EXISTS "document_versions_select_own" ON document_versions;
+CREATE POLICY "document_versions_select_own"
   ON document_versions
   FOR SELECT
   USING (
