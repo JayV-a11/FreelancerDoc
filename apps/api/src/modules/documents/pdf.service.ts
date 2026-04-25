@@ -23,12 +23,38 @@ function getLabels(locale: string) {
 }
 
 /** Replace {{placeholder}} tokens in text with actual document/user values. */
-function substitutePlaceholders(text: string, doc: Document, user: PdfUser): string {
+const LOCALE_MAP: Record<string, string> = {
+  'pt-br': 'pt-BR',
+  pt: 'pt-BR',
+  es: 'es-ES',
+  en: 'en-US',
+}
+
+function toIntlLocale(locale: string): string {
+  return LOCALE_MAP[locale.toLowerCase()] ?? 'en-US'
+}
+
+function formatCurrency(value: { toString(): string }, currency: string, locale: string): string {
+  try {
+    const num = parseFloat(value.toString())
+    return new Intl.NumberFormat(toIntlLocale(locale), {
+      style: 'currency',
+      currency: currency || 'BRL',
+      minimumFractionDigits: 2,
+    }).format(num)
+  } catch {
+    return value.toString()
+  }
+}
+
+function substitutePlaceholders(text: string, doc: Document, user: PdfUser, locale: string): string {
   const senderName = user.professionalName ?? user.name
+  const intlLocale = toIntlLocale(locale)
   const validUntil = doc.validUntil
-    ? new Date(doc.validUntil).toLocaleDateString(locale === 'pt-br' ? 'pt-BR' : locale === 'es' ? 'es-ES' : 'en-US')
+    ? new Date(doc.validUntil).toLocaleDateString(intlLocale)
     : '—'
   const now = new Date()
+  const formattedValue = formatCurrency(doc.totalValue, doc.currency, locale)
 
   return text
     .replace(/\{\{client_name\}\}/gi, doc.clientName)
@@ -36,16 +62,16 @@ function substitutePlaceholders(text: string, doc: Document, user: PdfUser): str
     .replace(/\{\{title\}\}/gi, doc.title)
     .replace(/\{\{project_name\}\}/gi, doc.title)
     .replace(/\{\{document_title\}\}/gi, doc.title)
-    .replace(/\{\{total_value\}\}/gi, doc.totalValue.toString())
-    .replace(/\{\{total\}\}/gi, doc.totalValue.toString())
-    .replace(/\{\{value\}\}/gi, doc.totalValue.toString())
+    .replace(/\{\{total_value\}\}/gi, formattedValue)
+    .replace(/\{\{total\}\}/gi, formattedValue)
+    .replace(/\{\{value\}\}/gi, formattedValue)
     .replace(/\{\{currency\}\}/gi, doc.currency)
     .replace(/\{\{valid_until\}\}/gi, validUntil)
     .replace(/\{\{valid_date\}\}/gi, validUntil)
     .replace(/\{\{sender_name\}\}/gi, senderName)
     .replace(/\{\{professional_name\}\}/gi, senderName)
     .replace(/\{\{your_name\}\}/gi, senderName)
-    .replace(/\{\{date\}\}/gi, now.toLocaleDateString())
+    .replace(/\{\{date\}\}/gi, now.toLocaleDateString(intlLocale))
     .replace(/\{\{year\}\}/gi, now.getFullYear().toString())
 }
 
@@ -184,7 +210,7 @@ export async function generateDocumentPdf(
     const font = isHeading ? boldFont : regularFont
     const size = isHeading ? 13 : 11
     const lineHeight = isHeading ? LINE_HEIGHT_HEADING : LINE_HEIGHT_TEXT
-    const value = substitutePlaceholders(block.value ?? '', document, user)
+    const value = substitutePlaceholders(block.value ?? '', document, user, locale)
 
     // Skip blocks that are empty or only punctuation after substitution
     const trimmed = value.trim()
